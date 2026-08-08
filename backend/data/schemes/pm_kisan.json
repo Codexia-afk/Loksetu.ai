@@ -1,0 +1,42 @@
+{
+  "id": "pm-kisan",
+  "name": "PM Kisan Samman Nidhi",
+  "type": "Central Scheme",
+  "state": "All India",
+  "department": "Ministry of Agriculture & Farmers Welfare, Govt. of India",
+  "last_verified": "2026-08-01",
+  "source_url": "https://pmkisan.gov.in/",
+  "status_note": "Hand-verified central scheme criteria",
+  "description": "Income support of ₹6,000 per year in three equal installments to all landholding farmer families across India.",
+  "required_documents": [
+    { "type": "aadhaar", "name": "Aadhaar Card", "mandatory": true },
+    { "type": "land_record", "name": "Land Holding Proof", "mandatory": true },
+    { "type": "bank_passbook", "name": "Aadhaar-seeded Bank Account Details", "mandatory": true }
+  ],
+  "rules": [
+    {
+      "id": "institutional_rule",
+      "field": "is_institutional_landholder",
+      "operator": "equals",
+      "target": false,
+      "label": "Applicant must not be an institutional landholder",
+      "citation": "PM-KISAN Operational Guidelines - Exclusion Criteria 1"
+    },
+    {
+      "id": "land_holding_rule",
+      "field": "land_holding_acres",
+      "operator": "greater_than",
+      "target": 0.0,
+      "label": "Applicant family must own cultivable agricultural land",
+      "citation": "PM-KISAN Eligibility Definition Clause 2"
+    },
+    {
+      "id": "age_rule",
+      "field": "age",
+      "operator": "greater_than_or_equal",
+      "target": 18,
+      "label": "Applicant must be an adult (18 years or older)",
+      "citation": "General Eligibility Standards"
+    }
+  ]
+}

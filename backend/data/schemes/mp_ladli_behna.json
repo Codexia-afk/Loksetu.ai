@@ -1,0 +1,50 @@
+{
+  "id": "mp-ladli-behna",
+  "name": "MP Mukhyamantri Ladli Behna Yojana",
+  "type": "State Scheme",
+  "state": "Madhya Pradesh",
+  "department": "Women and Child Development Dept, Govt. of Madhya Pradesh",
+  "last_verified": "2026-08-01",
+  "source_url": "https://cmladlibehna.mp.gov.in/",
+  "status_note": "Hand-verified state scheme criteria — ILLUSTRATIVE — VERIFY BEFORE JUDGING",
+  "description": "Financial aid of ₹1,250/month for eligible women in Madhya Pradesh to encourage financial self-reliance.",
+  "required_documents": [
+    { "type": "samagra_id", "name": "Samagra Family ID & Member ID", "mandatory": true },
+    { "type": "aadhaar", "name": "Aadhaar Card (eKYC Linked)", "mandatory": true },
+    { "type": "bank_passbook", "name": "DBT-Enabled Bank Account", "mandatory": true }
+  ],
+  "rules": [
+    {
+      "id": "residence_rule",
+      "field": "state",
+      "operator": "equals",
+      "target": "Madhya Pradesh",
+      "label": "Applicant must be a resident of Madhya Pradesh",
+      "citation": "Clause 2.1 - Resident Qualification"
+    },
+    {
+      "id": "gender_rule",
+      "field": "gender",
+      "operator": "equals",
+      "target": "Female",
+      "label": "Applicant must be female",
+      "citation": "Clause 1.2 - Gender Criteria"
+    },
+    {
+      "id": "age_rule",
+      "field": "age",
+      "operator": "range",
+      "target": [21, 60],
+      "label": "Applicant age must be between 21 and 60 years",
+      "citation": "Clause 3.1 - Age Bracket Criteria"
+    },
+    {
+      "id": "income_cap_rule",
+      "field": "annual_income_inr",
+      "operator": "less_than_or_equal",
+      "target": 250000,
+      "label": "Annual family income must not exceed ₹2,50,000",
+      "citation": "Clause 4.3 - Income Ceiling Limit"
+    }
+  ]
+}

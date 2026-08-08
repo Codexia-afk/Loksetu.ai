@@ -1,0 +1,50 @@
+{
+  "id": "wb-krishak-bandhu",
+  "name": "West Bengal Krishak Bandhu (Assured Income)",
+  "type": "State Scheme",
+  "state": "West Bengal",
+  "department": "Department of Agriculture, Govt. of West Bengal",
+  "last_verified": "2026-08-01",
+  "source_url": "https://matirkatha.wb.gov.in/krishakbandhu",
+  "status_note": "Hand-verified active state scheme guidelines",
+  "description": "Financial assistance of up to ₹10,000 per year to all eligible farmers having arable land in West Bengal.",
+  "required_documents": [
+    { "type": "aadhaar", "name": "Aadhaar Card", "mandatory": true },
+    { "type": "land_record", "name": "RoR / Khatiyan / Porcha", "mandatory": true },
+    { "type": "bank_passbook", "name": "Bank Passbook (First Page)", "mandatory": true }
+  ],
+  "rules": [
+    {
+      "id": "residence_rule",
+      "field": "state",
+      "operator": "equals",
+      "target": "West Bengal",
+      "label": "Applicant must be a permanent resident of West Bengal",
+      "citation": "Clause 3.1 - Krishak Bandhu Operational Guidelines"
+    },
+    {
+      "id": "age_rule",
+      "field": "age",
+      "operator": "range",
+      "target": [18, 60],
+      "label": "Applicant age must be between 18 and 60 years",
+      "citation": "Clause 4.2 - Age Eligibility Framework"
+    },
+    {
+      "id": "land_scale_rule",
+      "field": "land_holding_acres",
+      "operator": "greater_than",
+      "target": 0.0,
+      "label": "Must possess verifiable agricultural land holding",
+      "citation": "Clause 5.1 - Land Ownership Verification Standard"
+    },
+    {
+      "id": "occupancy_rule",
+      "field": "nature_of_occupancy",
+      "operator": "in",
+      "target": ["Owner", "Patta Holder", "Recorded Bargadar"],
+      "label": "Occupancy nature must be Owner, Patta Holder, or Recorded Bargadar",
+      "citation": "Clause 5.4 - Land Title Definitions"
+    }
+  ]
+}

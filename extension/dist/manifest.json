@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "LokSetu — Sovereign Form Intelligence & Guided Application Copilot",
+  "version": "1.0.0",
+  "description": "Privacy-first browser copilot for Indian government welfare applications with offline encrypted vault, deterministic eligibility engine, and human approval gate.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr26mg8fpKZ0v3YuUUzUTTRS7R/VUFKRtaq7YIIjBE8uCMh+EmooPhe/HiGTbU5FKnxK97ElWre+fIyhkawF0GDk1n3K2CSjwRLUZhR+WNJsU9scj+FV4cNRyupHKgGJ0qSDoPGZBQh0bwx26vWPPZScxtH8q0lEEXXBciRT/Q1fbH8cJeCGT6tESPbdIlHPtf+iQtIEzQerjpDtSvb4iDnMYSp6WuyXSGTMn6TwnxyyXbnOqkKFZBOMqNXHW3pReWmRVmvqeaoOh/oSFkaegj33sDZdbPOL5aFe7C0KrpmkSl40RI7/Kq0OyIzpAFCb+QjW/IHkwn4d+zdYX3PZcKQIDAQAB",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "src/background/serviceWorker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open LokSetu Copilot"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "http://127.0.0.1/*"
+      ],
+      "js": [
+        "src/content/contentScript.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
