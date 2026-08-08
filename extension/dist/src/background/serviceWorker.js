@@ -1,1 +1,0 @@
-chrome.runtime.onInstalled.addListener(()=>{console.log("LokSetu Manifest V3 Service Worker Installed.")});chrome.action.onClicked.addListener(e=>{e.id&&chrome.sidePanel.open({tabId:e.id})});chrome.runtime.onMessage.addListener((e,n,i)=>{var d;e.type==="FORM_DETECTED"&&((d=n.tab)!=null&&d.id)&&chrome.sidePanel.open({tabId:n.tab.id}).catch(()=>{})});
