@@ -1,10 +1,16 @@
-import { CitizenProfile, SchemeRule, EligibilityResult, AuditCriterion } from '../types';
+import { CitizenProfile, SchemeRule, EligibilityResult, AuditCriterion, RuleProvenance } from '../types';
+
+function findProvenance(scheme: SchemeRule, ruleIdKey: string): RuleProvenance | undefined {
+  if (!scheme.rules) return undefined;
+  const match = scheme.rules.find(r => r.ruleId.includes(ruleIdKey) || r.provenance?.ruleId.includes(ruleIdKey));
+  return match?.provenance;
+}
 
 export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule): EligibilityResult {
   const auditTrail: AuditCriterion[] = [];
   let isEligible = true;
 
-  const criteria = scheme.criteria;
+  const criteria = scheme.criteria || {};
 
   const age = profile.age ?? (profile.personalDetails?.dob ? new Date().getFullYear() - new Date(profile.personalDetails.dob).getFullYear() : 35);
   const gender = profile.gender ?? profile.personalDetails?.gender ?? 'Male';
@@ -22,10 +28,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const agePassed = age >= minAge && age <= maxAge;
     if (!agePassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_age`,
       criterion: `Age Requirement (${minAge}–${maxAge} years)`,
       expected: `${minAge}–${maxAge} years`,
       actual: `${age} years`,
-      passed: agePassed
+      passed: agePassed,
+      provenance: findProvenance(scheme, 'age')
     });
   }
 
@@ -34,10 +42,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const genderPassed = criteria.allowedGender.includes(gender);
     if (!genderPassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_gender`,
       criterion: `Gender Requirement (${criteria.allowedGender.join(', ')})`,
       expected: criteria.allowedGender.join(', '),
       actual: gender,
-      passed: genderPassed
+      passed: genderPassed,
+      provenance: findProvenance(scheme, 'gender')
     });
   }
 
@@ -46,10 +56,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const statePassed = criteria.allowedStates.includes(state);
     if (!statePassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_state`,
       criterion: `State Domicile (${criteria.allowedStates.join(', ')})`,
       expected: criteria.allowedStates.join(', '),
       actual: state,
-      passed: statePassed
+      passed: statePassed,
+      provenance: findProvenance(scheme, 'state')
     });
   }
 
@@ -58,10 +70,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const incomePassed = annualIncome <= criteria.maxIncomeCap;
     if (!incomePassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_income`,
       criterion: `Annual Income Ceiling (₹${criteria.maxIncomeCap.toLocaleString('en-IN')})`,
       expected: `≤ ₹${criteria.maxIncomeCap.toLocaleString('en-IN')}`,
       actual: `₹${annualIncome.toLocaleString('en-IN')}`,
-      passed: incomePassed
+      passed: incomePassed,
+      provenance: findProvenance(scheme, 'income')
     });
   }
 
@@ -70,10 +84,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const landPassed = landHoldingHectares >= criteria.minLandHoldingHectares;
     if (!landPassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_land`,
       criterion: `Minimum Land Holding (${criteria.minLandHoldingHectares} Ha)`,
       expected: `≥ ${criteria.minLandHoldingHectares} Ha`,
       actual: `${landHoldingHectares} Ha`,
-      passed: landPassed
+      passed: landPassed,
+      provenance: findProvenance(scheme, 'land')
     });
   }
 
@@ -83,10 +99,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
                            (natureOfOccupancy ? criteria.allowedCategories.includes(natureOfOccupancy) : false);
     if (!categoryPassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_category`,
       criterion: `Farmer / Occupancy Category`,
       expected: criteria.allowedCategories.join(' / '),
       actual: category + (natureOfOccupancy ? ` (${natureOfOccupancy})` : ''),
-      passed: categoryPassed
+      passed: categoryPassed,
+      provenance: findProvenance(scheme, 'category')
     });
   }
 
@@ -95,10 +113,12 @@ export function evaluateEligibility(profile: CitizenProfile, scheme: SchemeRule)
     const instPassed: boolean = !isInstitutionalLandholder;
     if (!instPassed) isEligible = false;
     auditTrail.push({
+      ruleId: `${scheme.schemeId}_non_inst`,
       criterion: `Non-Institutional Landholder`,
       expected: `Individual Farmer (Non-Institutional)`,
       actual: isInstitutionalLandholder ? 'Institutional Landholder' : 'Individual Farmer',
-      passed: instPassed
+      passed: instPassed,
+      provenance: findProvenance(scheme, 'non_inst')
     });
   }
 

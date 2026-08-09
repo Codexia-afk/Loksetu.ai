@@ -14,5 +14,92 @@
     "maxIncomeCap": 300000,
     "minLandHoldingHectares": 0.01,
     "disqualifyInstitutionalLandholders": true
-  }
+  },
+  "rules": [
+    {
+      "ruleId": "wb_kb_age",
+      "minAge": 18,
+      "maxAge": 60,
+      "provenance": {
+        "ruleId": "wb_kb_age",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "gazette",
+        "sourceTitle": "West Bengal Gazette Notification No. 102-Agri/2019",
+        "sourceReference": "WB-GAZ-2019-102-SEC4",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Applicant age must be between 18 and 60 years at registration."
+      }
+    },
+    {
+      "ruleId": "wb_kb_state",
+      "allowedStates": ["West Bengal"],
+      "provenance": {
+        "ruleId": "wb_kb_state",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "gazette",
+        "sourceTitle": "West Bengal Gazette Notification No. 102-Agri/2019",
+        "sourceReference": "WB-GAZ-2019-102-SEC2",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Applicant must be a permanent resident of West Bengal."
+      }
+    },
+    {
+      "ruleId": "wb_kb_income",
+      "maxIncomeCap": 300000,
+      "provenance": {
+        "ruleId": "wb_kb_income",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "official_portal_faq",
+        "sourceTitle": "Krishak Bandhu Operational Guidelines 2026",
+        "sourceReference": "KB-GUIDE-2026-CH3",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Annual family income must not exceed INR 3,00,000."
+      }
+    },
+    {
+      "ruleId": "wb_kb_land",
+      "minLandHoldingHectares": 0.01,
+      "provenance": {
+        "ruleId": "wb_kb_land",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "gazette",
+        "sourceTitle": "West Bengal Gazette Notification No. 102-Agri/2019",
+        "sourceReference": "WB-GAZ-2019-102-SEC5",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Applicant must own or cultivate at least 1 Decimal (0.01 Hectare) of land."
+      }
+    },
+    {
+      "ruleId": "wb_kb_category",
+      "allowedCategories": ["Marginal", "Small", "Large", "Patta Holder", "Recorded Bargadar"],
+      "provenance": {
+        "ruleId": "wb_kb_category",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "circular",
+        "sourceTitle": "Dept of Agri Circular on Sharecropper (Bargadar) Inclusion",
+        "sourceReference": "WB-CIRC-2021-AGRI-55",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Includes registered Bargadars and Patta holders."
+      }
+    },
+    {
+      "ruleId": "wb_kb_non_inst",
+      "disqualifyInstitutionalLandholders": true,
+      "provenance": {
+        "ruleId": "wb_kb_non_inst",
+        "schemeId": "wb_krishak_bandhu",
+        "sourceType": "gazette",
+        "sourceTitle": "West Bengal Gazette Notification No. 102-Agri/2019",
+        "sourceReference": "WB-GAZ-2019-102-EXCL1",
+        "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+        "lastVerifiedDate": "2026-07-15",
+        "ruleLogic": "Institutional landholders (companies, trusts) are excluded."
+      }
+    }
+  ]
 }

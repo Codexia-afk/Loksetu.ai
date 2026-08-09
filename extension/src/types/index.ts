@@ -1,3 +1,14 @@
+export interface RuleProvenance {
+  ruleId: string;
+  schemeId: string;
+  sourceType: 'gazette' | 'official_portal_faq' | 'circular';
+  sourceTitle: string;
+  sourceReference: string;
+  sourceUrl: string;
+  lastVerifiedDate: string;
+  ruleLogic: string;
+}
+
 export interface CitizenProfile {
   id: string;
   profileName: string;
@@ -72,6 +83,19 @@ export interface ApplicationMapData {
   readinessScore: number;
 }
 
+export interface SchemeRuleCriterion {
+  ruleId: string;
+  minAge?: number;
+  maxAge?: number;
+  allowedGender?: string[];
+  allowedStates?: string[];
+  allowedCategories?: string[];
+  maxIncomeCap?: number;
+  minLandHoldingHectares?: number;
+  disqualifyInstitutionalLandholders?: boolean;
+  provenance: RuleProvenance;
+}
+
 export interface SchemeRule {
   schemeId: string;
   schemeName: string;
@@ -80,7 +104,8 @@ export interface SchemeRule {
   lastVerified: string;
   sourceUrl: string;
   verificationStatus: 'human-verified' | 'ILLUSTRATIVE — VERIFY BEFORE JUDGING';
-  criteria: {
+  rules: SchemeRuleCriterion[];
+  criteria?: {
     minAge?: number;
     maxAge?: number;
     allowedGender?: string[];
@@ -93,10 +118,12 @@ export interface SchemeRule {
 }
 
 export interface AuditCriterion {
+  ruleId: string;
   criterion: string;
   expected: string;
   actual: string;
   passed: boolean;
+  provenance?: RuleProvenance;
 }
 
 export interface EligibilityResult {
@@ -143,7 +170,7 @@ export interface AutofillItem {
   transformInstruction?: TransformedValueInstruction;
 }
 
-// Master Prompt v2 Types
+// Master Prompt v2 & v2.1 Types
 export type TransformOp =
   | 'NONE'
   | 'EXTRACT_DAY'

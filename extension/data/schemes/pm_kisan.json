@@ -14,5 +14,92 @@
     "maxIncomeCap": 250000,
     "minLandHoldingHectares": 0.01,
     "disqualifyInstitutionalLandholders": true
-  }
+  },
+  "rules": [
+    {
+      "ruleId": "pmk_age",
+      "minAge": 18,
+      "maxAge": 100,
+      "provenance": {
+        "ruleId": "pmk_age",
+        "schemeId": "pm_kisan",
+        "sourceType": "gazette",
+        "sourceTitle": "PM-KISAN Operational Guidelines Gazette 2019",
+        "sourceReference": "MOA-PMK-2019-SEC3",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "Farmer applicant must be at least 18 years of age."
+      }
+    },
+    {
+      "ruleId": "pmk_state",
+      "allowedStates": ["ALL"],
+      "provenance": {
+        "ruleId": "pmk_state",
+        "schemeId": "pm_kisan",
+        "sourceType": "gazette",
+        "sourceTitle": "PM-KISAN Central Sector Scheme Notification",
+        "sourceReference": "MOA-PMK-2019-SEC1",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "Open to landholding farmer families across all Indian States & UTs."
+      }
+    },
+    {
+      "ruleId": "pmk_income",
+      "maxIncomeCap": 250000,
+      "provenance": {
+        "ruleId": "pmk_income",
+        "schemeId": "pm_kisan",
+        "sourceType": "official_portal_faq",
+        "sourceTitle": "PM-KISAN Exclusion Criteria Guide",
+        "sourceReference": "PMK-EXCL-CAT-4",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "Income tax payers in last assessment year are excluded."
+      }
+    },
+    {
+      "ruleId": "pmk_land",
+      "minLandHoldingHectares": 0.01,
+      "provenance": {
+        "ruleId": "pmk_land",
+        "schemeId": "pm_kisan",
+        "sourceType": "gazette",
+        "sourceTitle": "PM-KISAN Scheme Extension Notification",
+        "sourceReference": "MOA-PMK-2019-EXT",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "Cultivable landholding registered in revenue records."
+      }
+    },
+    {
+      "ruleId": "pmk_category",
+      "allowedCategories": ["Marginal", "Small", "Large"],
+      "provenance": {
+        "ruleId": "pmk_category",
+        "schemeId": "pm_kisan",
+        "sourceType": "circular",
+        "sourceTitle": "Ministry of Agriculture Farmer Definition Circular",
+        "sourceReference": "MOA-CIRC-2020-04",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "All landholding farmer families regardless of land size."
+      }
+    },
+    {
+      "ruleId": "pmk_non_inst",
+      "disqualifyInstitutionalLandholders": true,
+      "provenance": {
+        "ruleId": "pmk_non_inst",
+        "schemeId": "pm_kisan",
+        "sourceType": "gazette",
+        "sourceTitle": "PM-KISAN Institutional Exclusion Clause",
+        "sourceReference": "MOA-PMK-2019-EXCL1",
+        "sourceUrl": "https://pmkisan.gov.in/",
+        "lastVerifiedDate": "2026-06-01",
+        "ruleLogic": "Institutional landholders, trusts, and companies excluded."
+      }
+    }
+  ]
 }

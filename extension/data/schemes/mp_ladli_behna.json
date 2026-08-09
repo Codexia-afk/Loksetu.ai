@@ -13,5 +13,78 @@
     "allowedStates": ["Madhya Pradesh"],
     "maxIncomeCap": 250000,
     "disqualifyInstitutionalLandholders": true
-  }
+  },
+  "rules": [
+    {
+      "ruleId": "mplb_age",
+      "minAge": 21,
+      "maxAge": 60,
+      "provenance": {
+        "ruleId": "mplb_age",
+        "schemeId": "mp_ladli_behna",
+        "sourceType": "gazette",
+        "sourceTitle": "MP WCD Gazette Rules Notification 2023",
+        "sourceReference": "MP-WCD-2023-LB-SEC3",
+        "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+        "lastVerifiedDate": "2026-05-10",
+        "ruleLogic": "Female resident aged between 21 and 60 years."
+      }
+    },
+    {
+      "ruleId": "mplb_gender",
+      "allowedGender": ["Female"],
+      "provenance": {
+        "ruleId": "mplb_gender",
+        "schemeId": "mp_ladli_behna",
+        "sourceType": "gazette",
+        "sourceTitle": "MP WCD Gazette Rules Notification 2023",
+        "sourceReference": "MP-WCD-2023-LB-SEC1",
+        "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+        "lastVerifiedDate": "2026-05-10",
+        "ruleLogic": "Scheme open exclusively to women applicants."
+      }
+    },
+    {
+      "ruleId": "mplb_state",
+      "allowedStates": ["Madhya Pradesh"],
+      "provenance": {
+        "ruleId": "mplb_state",
+        "schemeId": "mp_ladli_behna",
+        "sourceType": "gazette",
+        "sourceTitle": "MP WCD Domicile Requirement Clause",
+        "sourceReference": "MP-WCD-2023-LB-SEC2",
+        "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+        "lastVerifiedDate": "2026-05-10",
+        "ruleLogic": "Applicant must be a permanent resident of Madhya Pradesh."
+      }
+    },
+    {
+      "ruleId": "mplb_income",
+      "maxIncomeCap": 250000,
+      "provenance": {
+        "ruleId": "mplb_income",
+        "schemeId": "mp_ladli_behna",
+        "sourceType": "official_portal_faq",
+        "sourceTitle": "Ladli Behna Portal FAQ & Income Ceiling Guide",
+        "sourceReference": "MP-LB-FAQ-INC-2.5L",
+        "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+        "lastVerifiedDate": "2026-05-10",
+        "ruleLogic": "Annual family income less than INR 2,50,000."
+      }
+    },
+    {
+      "ruleId": "mplb_non_inst",
+      "disqualifyInstitutionalLandholders": true,
+      "provenance": {
+        "ruleId": "mplb_non_inst",
+        "schemeId": "mp_ladli_behna",
+        "sourceType": "circular",
+        "sourceTitle": "MP Govt Exclusion Guidelines",
+        "sourceReference": "MP-LB-EXCL-2023-09",
+        "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+        "lastVerifiedDate": "2026-05-10",
+        "ruleLogic": "Families with institutional land holdings or tax-payers excluded."
+      }
+    }
+  ]
 }
