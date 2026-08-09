@@ -32,7 +32,7 @@ function scanDirectory(dir) {
   return violations;
 }
 
-console.log('🔍 Running LokSetu Zero Auto-Submit Adversarial Audit (Fix #5 & Section 17)...');
+console.log('🔍 Running LokSetu Zero Auto-Submit Adversarial Audit (Including ApplicationTracker & Master Engine v2)...');
 const violations = scanDirectory(srcDir);
 
 if (violations.length > 0) {
@@ -43,6 +43,6 @@ if (violations.length > 0) {
   });
   process.exit(1);
 } else {
-  console.log('✅ ZERO AUTO-SUBMIT GUARANTEE VERIFIED: 0 occurrences of .submit(), .requestSubmit(), or synthetic submit events in codebase.');
+  console.log('✅ ZERO AUTO-SUBMIT GUARANTEE VERIFIED: 0 occurrences of .submit(), .requestSubmit(), or synthetic submit events across all engine modules.');
   process.exit(0);
 }
