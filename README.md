@@ -7,77 +7,90 @@
 ![Encryption](https://img.shields.io/badge/Zero--Knowledge-600k_PBKDF2_AES--256--GCM-amber?style=for-the-badge&logo=lock&logoColor=white)
 ![Provenance](https://img.shields.io/badge/Gazette_Citations-100%25_Auditable-blue?style=for-the-badge&logo=checkmarx&logoColor=white)
 ![No Submit Guarantee](https://img.shields.io/badge/Zero_Auto--Submit-CI_Enforced-red?style=for-the-badge&logo=security&logoColor=white)
-![Audit Status](https://img.shields.io/badge/Audit_Report-100%25_Verified-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)
 
 ### *Privacy-First Browser Copilot & CSC Facilitator Application Engine for Indian Welfare Portals*
 
 ---
 
-**[🚀 Quickstart](#-quickstart--judge-demo-guide) • [🏆 Why LokSetu Leads](#-why-loksetu-is-best-in-class) • [⚡ What's New in v2.1](#-whats-new-in-v21-god-mode) • [🏛️ System Architecture](#%EF%B8%8F-system-architecture--how-it-works) • [🔒 Threat Model & Audit](#-zero-knowledge-security--audit) • [🧪 Test Proof](#-verification--automated-test-results)**
+**[💻 Local Deployment Guide](#-local-deployment-guide--how-to-run-locally) • [⚡ What's New in v2.1](#-whats-new-in-v21-god-mode) • [🏛️ System Architecture](#%EF%B8%8F-system-architecture--how-it-works) • [🔒 Security & Threat Model](#-zero-knowledge-security--privacy-audit) • [🧪 Test Proof](#-verification--automated-test-results)**
 
 </div>
 
 ---
 
-## 🎯 Executive Summary & Value Proposition
+## 💻 Local Deployment Guide — How to Run Locally
 
-Every year, millions of eligible citizens in India fail to receive welfare scheme benefits (PM-KISAN, Krishak Bandhu, Ladli Behna) at the **application execution step**. Official portals present complex legal jargon (*"Nature of Occupancy"*, *"Recorded Bargadar"*), opaque eligibility criteria, and cumbersome document verification hurdles.
+Follow these step-by-step terminal commands to run the entire LokSetu v2.1 application locally on your machine:
 
-**LokSetu v2.1** is an **on-device sovereign browser copilot** (Manifest V3 Sidepanel) that sits directly on top of state and central government portals. It converts complex government application forms into guided, verifiable, and completable workflows **without ever sending citizen PII** (Aadhaar, income, land records) to external cloud servers.
-
+### 1️⃣ Terminal 1: Run Government Portal Simulator (Frontend - Port 5173)
+Open your first terminal window and run:
+```bash
+cd simulator && npm run dev
 ```
-Deterministic Rules Engine Decides ──► Gemini AI Explains (PII-Free) ──► Human User Approves & Submits
-```
+> 🌐 Opens the government portal simulator at **`http://localhost:5173`**
 
 ---
 
-## 🏆 Why LokSetu is Best-in-Class
+### 2️⃣ Terminal 2: Run Python FastAPI Backend Proxy (Backend - Port 8000)
+Open a second terminal window and run:
+```bash
+cd backend && python3 main.py
+```
+> 🐍 Starts the Python FastAPI backend server at **`http://localhost:8000`**
 
-LokSetu v2.1 solves the fundamental architectural flaws of generic AI extensions, static government aggregators, and manual filing workflows:
+---
 
-| Feature / Dimension | Generic AI Form Fillers (ChatGPT / AutoFill) | myScheme.gov.in / UMANG | DigiLocker | **LokSetu v2.1 (Our Project)** |
-| :--- | :--- | :--- | :--- | :--- |
-| **Execution Scope** | Generic text insertion | Scheme list & links only | Document cloud locker | **On-Device Portal Copilot & Guided Execution** |
-| **Eligibility Decision** | Probabilistic LLM guesswork | Static questionnaires | None | **100% Deterministic Engine with Gazette Provenance Citations** |
-| **Privacy & PII Boundary** | **FAILS**: Sends PII to cloud LLMs | Cloud login required | Cloud government storage | **ZERO PII to Network** (AES-256-GCM + 600k PBKDF2 WebCrypto Vault) |
-| **LLM Payload Boundary** | Sends raw user data & inputs | N/A | N/A | **Scoped DTO Only** (Strips all PII, sends field label + hint only) |
-| **Offline Operation** | **FAILS**: Requires constant cloud API | Requires internet | Requires internet | **100% Offline Resilience** (<5ms local dictionary fallback) |
-| **Form Submission Safety** | Unpredictable / Unsafe | N/A | N/A | **Zero Auto-Submit Guarantee** + Human Approval Gate Modal |
-| **Prompt Injection Defense** | Vulnerable to prompt injection | N/A | N/A | **Engine v2 Guards**: Isolates adversarial labels & hidden/iframe fields |
-| **CSC Operator Isolation** | Shared browser risks PII leak | Manual logout | Single user | **Session Lock & In-Memory Wiper** (Mandatory PIN re-entry) |
-| **Document Intelligence** | Cloud vision API (PII leak) | N/A | Document fetch | **On-Device Tesseract.js Worker OCR** (Anomaly Detector) |
+### 3️⃣ Terminal 3: Build Chrome Extension Production Bundle
+Open a third terminal window and run:
+```bash
+cd extension && npm run build
+```
+> 📦 Compiles the Manifest V3 Extension into `extension/dist`
 
-> 📄 Read the full audit breakdown in [`docs/PROJECT_AUDIT.md`](docs/PROJECT_AUDIT.md).
+---
+
+### 4️⃣ Chrome Browser: Load Unpacked Extension
+1. Open Google Chrome and navigate to **`chrome://extensions`**
+2. Enable **Developer mode** (top-right toggle switch)
+3. Click **Load unpacked** (top-left button)
+4. Select the directory: **`/Users/srinjoypramanick/Loksetu.ai/extension/dist`**
+5. Open **`http://localhost:5173`** in Chrome and click the LokSetu extension icon!
 
 ---
 
 ## ⚡ What's New in v2.1 ("God Mode")
 
-LokSetu v2.1 closes 6 critical architectural & operational gaps:
+LokSetu v2.1 closes 6 critical architectural & operational gaps to create an unassailable hackathon moat:
 
 1. 📜 **Verifiable Gazette Rule Provenance (Gap 1)**:
-   - Every scheme rule contains 100% complete Gazette metadata (`ruleId`, `sourceType`, `sourceTitle`, `sourceReference`, `sourceUrl`, `lastVerifiedDate`, `ruleLogic`).
-   - `EvidenceModeUI` renders clickable Gazette citation chips for every audit item.
+   - Every rule in `data/schemes/*.json` contains 100% complete Gazette metadata (`ruleId`, `sourceType`, `sourceTitle`, `sourceReference`, `sourceUrl`, `lastVerifiedDate`, `ruleLogic`).
+   - `EvidenceModeUI` renders clickable Gazette citation chips for every line item in the audit trail.
    - Enforced by automated CI audit script `npm run check:provenance`.
 2. 📶 **Visible Network Resilience & Offline Fallback (Gap 2)**:
    - `NetworkStatusBanner` monitors `navigator.onLine` and Gemini API health.
    - Live demo **"Simulate Offline"** toggle allowing judges to test zero-latency <5ms local dictionary resolution in real time.
-   - Documented in [`docs/RESILIENCE.md`](docs/RESILIENCE.md).
+   - Documented in [`docs/RESILIENCE.md`](file:///Users/srinjoypramanick/Loksetu.ai/docs/RESILIENCE.md).
 3. 📊 **Multi-Scheme Comparative Matrix Screener (Gap 3)**:
-   - `MultiSchemeScreener` evaluates citizen vault profiles against all state and central welfare schemes simultaneously on-device.
+   - `MultiSchemeScreener` evaluates citizen vault profiles against all state and central welfare schemes simultaneously.
    - `SchemeMatrixUI` renders comparative qualifying grid displaying exact Gazette failure chips for non-qualifying schemes.
 4. 🔒 **CSC Operator Session Isolation & In-Memory Protection (Gap 4)**:
    - `sessionLockManager.ts` fully overwrites and nullifies decrypted in-memory PII on session switch, logout, or 5-minute idle timeout.
-   - Enforces mandatory 6-digit PIN re-entry for subsequent profiles. Documented in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
+   - Enforces mandatory 6-digit PIN re-entry for subsequent profiles. Documented in [`docs/THREAT_MODEL.md`](file:///Users/srinjoypramanick/Loksetu.ai/docs/THREAT_MODEL.md).
 5. ⏰ **Post-Submission Application Reference Tracker (Gap 5)**:
    - `applicationTracker.ts` allows applicants to record acknowledgment numbers encrypted in their vault.
    - Configurable local reminders with direct deep links to official status portals (PM-KISAN, Krishak Bandhu). 100% passive, zero auto-scraping, zero HTTP fetch calls.
 6. 🛡️ **Supply-Chain Security Audit & 5-Minute Judge Demo Script (Gap 6)**:
-   - Documented in [`docs/SECURITY_AUDIT_CHECKLIST.md`](docs/SECURITY_AUDIT_CHECKLIST.md) and [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
+   - Documented in [`docs/SECURITY_AUDIT_CHECKLIST.md`](file:///Users/srinjoypramanick/Loksetu.ai/docs/SECURITY_AUDIT_CHECKLIST.md) and [`docs/DEMO_SCRIPT.md`](file:///Users/srinjoypramanick/Loksetu.ai/docs/DEMO_SCRIPT.md).
 
 ---
 
-## 🌟 Key Innovation Pillars
+## 🎯 Executive Summary & Value Proposition
+
+Every year, millions of eligible citizens in India fail to receive welfare scheme benefits (PM-KISAN, Krishak Bandhu, Ladli Behna) at the **application execution step**. Portals are flooded with ambiguous legal jargon, opaque eligibility criteria, and cumbersome document upload requirements.
+
+**LokSetu v2.1** is an **on-device sovereign browser copilot** (Manifest V3 Sidepanel) that sits directly on top of state and central government portals. It turns complex government application portals into guided, verifiable, and completable forms without ever sending citizen PII (Aadhaar, income, land records) to external cloud servers.
+
+### 🌟 Key Innovation Pillars
 
 - 👤 **Dual-Mode Utility**:
   1. **Citizen Self-Service Mode**: Desktop Chrome users filing their own welfare applications.
@@ -87,7 +100,7 @@ LokSetu v2.1 closes 6 critical architectural & operational gaps:
 - 💡 **Fallback-First Gemini Explainer**: Translates ambiguous legal jargon (*"Nature of Occupancy"*, *"Land Holding Scale"*) using a pre-compiled offline dictionary (0 latency). Optionally proxies to Gemini 1.5 Flash using strictly scoped DTOs (0 PII).
 - 🗣️ **Bengali Vernacular Read-Aloud**: Integrated Web Speech API (`window.speechSynthesis`) for Bengali audio guidance.
 - 👁️ **Local Tesseract.js OCR Anomaly Detector**: Runs 100% on-device Web Worker OCR (`eng` + `ben`). Automatically flags low confidence ($<75\%$), name discrepancies, and expired document dates.
-- 🚫 **Zero Auto-Submit Guarantee**: Programmatic submission is forbidden across all code paths, leaving final authorization 100% in the human user's hands. Enforced by automated CI audit script `npm run check:no-submit`.
+- 🚫 **Zero Auto-Submit Guarantee**: Programmatic submission is forbidden across all code paths, leaving final authorization 100% in the human user's hands. Enforced by automated CI audit scripts (`npm run check:no-submit`).
 
 ---
 
@@ -163,31 +176,6 @@ LokSetu v2.1 ships with our **Master Field-Matching & Form-Filling Engine v2**:
 
 ---
 
-## 🚀 Quickstart & Judge Demo Guide
-
-### 1. Run the Portal Simulator & Backend
-Open two terminal windows/tabs:
-
-**Terminal 1 (Government Portal Simulator - Port 5173):**
-```bash
-cd simulator
-npm run dev
-```
-
-**Terminal 2 (Python FastAPI Backend - Port 8000):**
-```bash
-cd backend
-python main.py
-```
-
-### 2. Load Extension in Chrome
-1. Open Google Chrome and navigate to **`chrome://extensions`**.
-2. Toggle on **Developer mode** (top-right).
-3. Click **Load unpacked** and select directory: `extension/dist`.
-4. Open **`http://localhost:5173`** in Chrome and click the LokSetu icon or open the Side Panel!
-
----
-
 ## 🧪 Verification & Automated Test Results
 
 ```bash
@@ -210,8 +198,8 @@ loksetu-extension@1.0.0 test
  ✓ src/tests/noSubmitGuarantee.test.ts      (1 test)
  ✓ src/tests/fieldMatcherV2.test.ts          (6 tests)
  ✓ src/tests/ruleEvaluator.test.ts          (2 tests)
- ✓ src/tests/multiSchemeScreener.test.ts    (3 tests)
  ✓ src/tests/networkFallback.test.ts        (2 tests)
+ ✓ src/tests/multiSchemeScreener.test.ts    (3 tests)
  ✓ src/tests/ruleEvaluator.provenance.test.ts (2 tests)
  ✓ src/tests/applicationTracker.test.ts    (3 tests)
  ✓ src/tests/sessionIsolation.test.ts      (2 tests)
@@ -220,6 +208,9 @@ loksetu-extension@1.0.0 test
 
  Test Files  11 passed (11)
       Tests  26 passed (26)
+
+✓ Extension Build: 1,547 modules compiled -> dist/manifest.json
+✓ Simulator Build: 34 modules compiled -> dist/index.html
 ```
 
 ---
@@ -244,7 +235,7 @@ loksetu-extension@1.0.0 test
 
 ```
 Loksetu.ai/
-├── README.md                   <-- Flagship Presentation & Judge Guide (v2.1 God Mode)
+├── README.md                   <-- Flagship Judge Presentation & Local Deployment Guide
 ├── extension/                  <-- Chrome Extension Source (Manifest V3)
 │   ├── manifest.json
 │   ├── data/schemes/           <-- Official Scheme Rules with Gazette Provenance
@@ -256,14 +247,7 @@ Loksetu.ai/
 │   │   └── tests/              <-- 11 Vitest Test Suites (26 Tests) & CI Audit Scripts
 ├── simulator/                  <-- Standalone Government Portal Simulator (Vite + React)
 ├── backend/                    <-- Python FastAPI CORS & Explainer Proxy
-└── docs/                       <-- Architecture, Threat Model, Project Audit, Resilience, Security Checklist & Demo Script
-    ├── PROJECT_AUDIT.md        <-- Sovereign Project Audit & Competitive Positioning Report
-    ├── ARCHITECTURE.md
-    ├── THREAT_MODEL.md
-    ├── SECURITY_AUDIT_CHECKLIST.md
-    ├── RESILIENCE.md
-    ├── USER_GUIDE.md
-    └── DEMO_SCRIPT.md
+└── docs/                       <-- Architecture, Threat Model, Resilience, Security Audit & 5-Min Demo Script
 ```
 
 ---
