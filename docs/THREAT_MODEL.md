@@ -49,3 +49,13 @@
   - **Mandatory PIN Re-entry**: Switching to a second citizen's vault requires explicit 6-digit PIN verification. Decryption keys are never reused across different profiles.
   - **Idle Auto-Lock**: Automatically clears decrypted in-memory PII after 5 minutes of inactivity (`IDLE_TIMEOUT_MS`).
   - **Visual Confirmation**: Emits `sessionCleared` events surfaced as UI notifications (*"Session cleared — no citizen data remains in memory"*).
+
+---
+
+## 6. Supply-Chain & Update Integrity
+
+- **Risk**: A compromised extension update or supply-chain mutation could attempt to introduce network exfiltration code targeting decrypted vault data.
+- **Mitigations**:
+  - **Manifest V3 Code Review**: All published extensions undergo Chrome Web Store static analysis prohibiting remote code execution (`unsafe-eval` forbidden).
+  - **Build SHA-256 Verification**: Production release ZIP bundles are published alongside git commit SHA-256 build hashes for verification by NGO IT auditors.
+  - **Host Permission Restriction**: Judging release is strictly restricted to `http://localhost:*/*` and `http://127.0.0.1:*/*` in `manifest.json`. Any expansion to production `*.gov.in` domains requires explicit manifest review.

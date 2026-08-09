@@ -7,7 +7,11 @@ import { EvidenceModeUI } from './components/EvidenceModeUI';
 import { DocumentOCRUI } from './components/DocumentOCRUI';
 import { HumanApprovalGate } from './components/HumanApprovalGate';
 import { VaultManagerUI } from './components/VaultManagerUI';
-import { FileText, ShieldCheck, FileScan, Lock, Layers } from 'lucide-react';
+import { NetworkStatusBanner } from './components/NetworkStatusBanner';
+import { SchemeMatrixUI } from './components/SchemeMatrixUI';
+import { ApplicationTrackerUI } from './components/ApplicationTrackerUI';
+import { registerSessionClearedListener } from '../engine/sessionLockManager';
+import { FileText, ShieldCheck, FileScan, Lock, Layers, Clock } from 'lucide-react';
 
 const DEFAULT_PROFILES: CitizenProfile[] = [
   {
@@ -46,7 +50,7 @@ const DEFAULT_PROFILES: CitizenProfile[] = [
 
 export const App: React.FC = () => {
   const [mode, setMode] = useState<'citizen' | 'facilitator'>('citizen');
-  const [activeTab, setActiveTab] = useState<'map' | 'evidence' | 'ocr' | 'vault'>('map');
+  const [activeTab, setActiveTab] = useState<'map' | 'matrix' | 'evidence' | 'ocr' | 'tracker' | 'vault'>('map');
 
   const [profiles, setProfiles] = useState<CitizenProfile[]>(DEFAULT_PROFILES);
   const [activeProfileId, setActiveProfileId] = useState<string>(DEFAULT_PROFILES[0].id);
@@ -56,6 +60,13 @@ export const App: React.FC = () => {
   const [statusNotification, setStatusNotification] = useState<string | null>(null);
 
   const activeProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
+
+  useEffect(() => {
+    const unregister = registerSessionClearedListener((reason) => {
+      setStatusNotification(`🔒 Session Lock: ${reason}`);
+    });
+    return unregister;
+  }, []);
 
   const handleScanDOM = () => {
     if (typeof chrome !== 'undefined' && chrome.tabs) {
@@ -68,7 +79,6 @@ export const App: React.FC = () => {
 
         chrome.tabs.sendMessage(tabId, { type: 'SCAN_DOM' }, (res) => {
           if (chrome.runtime.lastError) {
-            // Attempt programmatic script injection as fallback
             if (chrome.scripting) {
               chrome.scripting.executeScript(
                 { target: { tabId }, files: ['src/content/contentScript.js'] },
@@ -77,7 +87,6 @@ export const App: React.FC = () => {
                     useFallbackMockMap();
                     return;
                   }
-                  // Retry message after injection
                   setTimeout(() => {
                     chrome.tabs.sendMessage(tabId, { type: 'SCAN_DOM' }, (retryRes) => {
                       if (retryRes && retryRes.mapData) {
@@ -157,7 +166,7 @@ export const App: React.FC = () => {
 
   const handleProfileSelect = (id: string) => {
     setActiveProfileId(id);
-    setStatusNotification(`Switched active profile to ${profiles.find(p => p.id === id)?.profileName}`);
+    setStatusNotification(`Switched session to ${profiles.find(p => p.id === id)?.profileName}`);
   };
 
   const handleCreateProfile = () => {
@@ -200,6 +209,9 @@ export const App: React.FC = () => {
       <Header mode={mode} onToggleMode={setMode} />
 
       <main className="flex-1 p-4 space-y-4 max-w-md mx-auto w-full">
+        {/* Network Resilience Status Banner */}
+        <NetworkStatusBanner />
+
         {mode === 'facilitator' && (
           <SessionSwitcher
             profiles={profiles}
@@ -210,52 +222,83 @@ export const App: React.FC = () => {
           />
         )}
 
-        <div className="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-xs">
+        {/* Tab Navigation */}
+        <div className="grid grid-cols-6 bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-[11px] gap-0.5">
           <button
             onClick={() => setActiveTab('map')}
-            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
               activeTab === 'map'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Form Map"
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Form Map</span>
+            <FileText className="w-3 h-3" />
+            <span>Map</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('matrix')}
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'matrix'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Multi-Scheme Matrix"
+          >
+            <Layers className="w-3 h-3 text-indigo-300" />
+            <span>Matrix</span>
           </button>
 
           <button
             onClick={() => setActiveTab('evidence')}
-            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
               activeTab === 'evidence'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Gazette Evidence"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
             <span>Evidence</span>
           </button>
 
           <button
             onClick={() => setActiveTab('ocr')}
-            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
               activeTab === 'ocr'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Document OCR"
           >
-            <FileScan className="w-3.5 h-3.5 text-amber-400" />
+            <FileScan className="w-3 h-3 text-amber-400" />
             <span>OCR</span>
           </button>
 
           <button
+            onClick={() => setActiveTab('tracker')}
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'tracker'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Application Tracker"
+          >
+            <Clock className="w-3 h-3 text-purple-400" />
+            <span>Tracker</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('vault')}
-            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+            className={`py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
               activeTab === 'vault'
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Encrypted Vault"
           >
-            <Lock className="w-3.5 h-3.5 text-indigo-300" />
+            <Lock className="w-3 h-3 text-indigo-300" />
             <span>Vault</span>
           </button>
         </div>
@@ -283,12 +326,20 @@ export const App: React.FC = () => {
           />
         )}
 
+        {activeTab === 'matrix' && (
+          <SchemeMatrixUI profile={activeProfile} />
+        )}
+
         {activeTab === 'evidence' && (
           <EvidenceModeUI profile={activeProfile} />
         )}
 
         {activeTab === 'ocr' && (
           <DocumentOCRUI profile={activeProfile} />
+        )}
+
+        {activeTab === 'tracker' && (
+          <ApplicationTrackerUI />
         )}
 
         {activeTab === 'vault' && (

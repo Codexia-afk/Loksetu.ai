@@ -11,6 +11,7 @@ describe('Deterministic Scheme Rule Evaluator', () => {
     lastVerified: '2026-08-01',
     sourceUrl: 'https://matirkatha.wb.gov.in/krishakbandhu',
     verificationStatus: 'human-verified',
+    rules: [],
     criteria: {
       minAge: 18,
       maxAge: 60,
