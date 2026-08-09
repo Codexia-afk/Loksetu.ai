@@ -11,7 +11,7 @@ Common Service Centre (CSC) operators and Gram Panchayat volunteers in rural Ind
 
 Most AI tools crash or display empty loading spinners when the internet drops. **LokSetu v2.1** implements a **Fallback-First Network Resilience Architecture**:
 
-1. **Zero-Latency Local Dictionary**: All legal jargon terms (*"Nature of Occupancy"*, *"Recorded Bargadar"*, *"Land Holding Scale"*) are pre-compiled into an on-device dictionary ([`explainerFallbackLibrary.ts`](file:///Users/srinjoypramanick/Loksetu.ai/extension/src/engine/explainerFallbackLibrary.ts)).
+1. **Zero-Latency Local Dictionary**: All legal jargon terms (*"Nature of Occupancy"*, *"Recorded Bargadar"*, *"Land Holding Scale"*) are pre-compiled into an on-device dictionary ([`explainerFallbackLibrary.ts`](../extension/src/engine/explainerFallbackLibrary.ts)).
 2. **Instant Offline Resolution**: When `navigator.onLine` is false or Gemini API calls time out, LokSetu resolves explanations locally in **<5ms** with zero uncaught runtime errors.
 3. **Live Demo Offline Simulation Toggle**: CSC operators and hackathon judges can click **Simulate Offline** in the sidepanel header to observe zero-latency offline fallback in real time.
 

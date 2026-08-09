@@ -28,7 +28,7 @@
 Before running LokSetu v2, ensure you have:
 - **Google Chrome Browser** (v114+ with Side Panel support).
 - **Node.js** (v18 or v20+) & **npm**.
-- The repository cloned locally at `/Users/srinjoypramanick/Loksetu.ai`.
+- The repository cloned locally on your system.
 
 ---
 
@@ -91,7 +91,7 @@ LokSetu v2 sits directly on top of state and central application portals as a Ch
 ### Step 1: Launch Government Portal Simulator
 Open your terminal and start the portal simulator:
 ```bash
-cd /Users/srinjoypramanick/Loksetu.ai/simulator
+cd simulator
 npm run dev
 ```
 - Open your browser to **`http://localhost:5173`**.
@@ -101,7 +101,7 @@ npm run dev
 1. Open Chrome and navigate to **`chrome://extensions`**.
 2. Toggle on **Developer mode** (top-right corner).
 3. Click **Load unpacked** (top-left).
-4. Select the directory: `/Users/srinjoypramanick/Loksetu.ai/extension/dist`.
+4. Select the directory: `extension/dist`.
 5. Pin the LokSetu extension icon to your Chrome toolbar.
 
 ### Step 3: Select Operating Mode (Citizen vs CSC Operator)
