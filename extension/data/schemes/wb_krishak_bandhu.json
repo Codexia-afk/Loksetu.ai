@@ -1,0 +1,18 @@
+{
+  "schemeId": "wb_krishak_bandhu",
+  "schemeName": "WB Krishak Bandhu (Assured Income)",
+  "state": "West Bengal",
+  "department": "Department of Agriculture",
+  "lastVerified": "2026-07-15",
+  "sourceUrl": "https://matirkatha.wb.gov.in/krishakbandhu",
+  "verificationStatus": "human-verified",
+  "criteria": {
+    "minAge": 18,
+    "maxAge": 60,
+    "allowedStates": ["West Bengal"],
+    "allowedCategories": ["Marginal", "Small", "Large", "Patta Holder", "Recorded Bargadar"],
+    "maxIncomeCap": 300000,
+    "minLandHoldingHectares": 0.01,
+    "disqualifyInstitutionalLandholders": true
+  }
+}

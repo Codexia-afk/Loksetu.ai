@@ -1,56 +1,40 @@
-# LokSetu Cryptographic Threat Model & Security Architecture
+# LokSetu v2 Threat Model & Security Architecture
 
-## Overview
-LokSetu is designed under a **Zero-Trust Client-Side Privacy** model. No citizen Personally Identifiable Information (PII), application values, or vault documents are ever transmitted to or stored on backend servers.
+## 1. Threat Boundary & Storage Paradigm
 
----
-
-## 1. Vault Key Derivation & Encryption Specs
-
-- **Algorithm**: AES-256-GCM (Authenticated Encryption with Associated Data).
-- **Key Derivation Function (KDF)**: PBKDF2-HMAC-SHA256.
-- **Iteration Count**: **600,000 iterations** (exceeding OWASP 2023+ recommendations).
-- **Salt**: 16-byte cryptographically secure random salt (`crypto.getRandomValues()`).
-- **Initialization Vector (IV)**: 12-byte random IV per encryption operation.
-- **Storage**: Encrypted payload stored in IndexedDB (`LokSetu_Vault_DB`).
+- **Zero-Knowledge On-Device Storage**: All citizen PII (Aadhaar number, income, land holdings, address) resides strictly within the browser runtime (`chrome.storage.local` / IndexedDB).
+- **No Remote Backend PII Storage**: There is no external database or server collecting citizen profiles.
 
 ---
 
-## 2. Threat Analysis: Offline Brute-Force on Exported `.loksetu` Files
+## 2. Cryptographic Security & Vault Export Protection
 
-When a facilitator or citizen exports their encrypted profile to a portable `.loksetu` JSON file:
-
-1. **Entropy Boundary**:
-   - A 6-digit numeric PIN yields $10^6 = 1,000,000$ possible keys.
-   - At 600,000 PBKDF2 iterations, calculating a single key attempt takes $\approx 100\text{ ms} - 250\text{ ms}$ on standard modern consumer hardware.
-
-2. **Offline Attack Cost**:
-   - Sequential CPU brute-force of all $10^6$ combinations:
-     $$1,000,000 \times 0.15\text{s} = 150,000\text{ seconds} \approx 41.6\text{ hours}$$
-   - Parallelized GPU attack: PBKDF2-HMAC-SHA256 with 600k iterations places heavy memory and compute pressure on GPU shaders, significantly raising energy and hardware costs for an attacker compared to raw MD5/SHA256 hashes.
-
-3. **Core Conclusion**:
-   - While 600,000 PBKDF2 iterations provides strong technical friction, **user PIN entropy remains the structural ceiling** of export file security.
-   - Facilitators managing multiple citizen profiles are advised to use 6+ digit PINs or alphanumeric passphrases for maximum offline protection.
+- **Key Derivation Standard**: Native Web Crypto `window.crypto.subtle` PBKDF2-HMAC-SHA256 with **600,000 iterations** (OWASP 2023+ requirement).
+- **Encryption Primitive**: AES-256-GCM authenticated encryption with 16-byte random salt and 12-byte random IV per operation.
+- **PIN Entropy Enforcement**: Minimum 6-digit numeric PIN required. PIN validation is hard-enforced inside cryptographic functions (`vaultCrypto.ts`), rejecting short PINs at runtime.
+- **Export Security (`.loksetu` files)**: Exported vault bundles contain AES-GCM ciphertext hex, salt hex, and IV hex only. 0 plaintext PII strings exist in the export bundle, making stolen vault files resistant to offline GPU brute-force attacks.
 
 ---
 
-## 3. Network & LLM Payload Boundary Threat Model
+## 3. LLM Privacy Boundary & Scoped DTO Payload
 
-1. **Host Permission Boundary**:
-   - `manifest.json` restricts extension network access strictly to `http://localhost:*/*` and `http://127.0.0.1:*/*`.
-   - Blanket host wildcard permissions (`<all_urls>`, `*://*/*`) are forbidden.
+- **Scoped DTO Boundary**: The Gemini explainer API call receives exclusively the `ScopedExplainerPayload` interface:
+  ```typescript
+  export interface ScopedExplainerPayload {
+    fieldId: string;
+    labelText: string;
+    ariaLabel: string;
+    inputType: string;
+    placeholder: string;
+    contextHint: string;
+  }
+  ```
+- **Prohibited Data**: Form input values, Aadhaar numbers, citizen name/age/income, OCR extracted text, and raw HTML blobs are **structurally prohibited** at the TypeScript DTO layer.
 
-2. **Zero-PII LLM Boundary**:
-   - The `/explain-field` proxy endpoint receives strictly scoped metadata DTOs:
-     - `fieldId`
-     - `labelText`
-     - `ariaLabel`
-     - `inputType`
-     - `placeholder`
-     - `contextHint` (extracted exclusively from parent `<legend>` or section heading text)
-   - Field values, user entries, Aadhaar numbers, and document OCR contents are **structurally omitted** at the TypeScript DTO layer.
+---
 
-3. **Zero Auto-Submit Guarantee**:
-   - `form.submit()` or programmatic DOM submission trigger calls are forbidden across all content scripts and extension modules.
-   - The user must explicitly inspect and confirm the Pre-Submission Review Modal before any submission action occurs.
+## 4. Zero Auto-Submit Security Model
+
+- **Risk**: Programmatic submission by extensions can submit invalid, fraudulent, or unintended applications without explicit user consent.
+- **Mitigation**: `.submit()`, `.requestSubmit()`, and synthetic `'submit'` event dispatching are strictly forbidden across all code paths.
+- **Enforcement**: Build-blocking CI script (`npm run check:no-submit`) and Vitest structural tests verify zero occurrences in source code.

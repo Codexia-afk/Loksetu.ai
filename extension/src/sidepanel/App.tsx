@@ -1,196 +1,268 @@
 import React, { useState, useEffect } from 'react';
-import { CitizenProfile, FieldMapEntry, SchemeEligibilityReport } from '../types';
-import { ProfileSelector } from './components/ProfileSelector';
-import { ApplicationMap } from './components/ApplicationMap';
-import { EvidenceEligibility } from './components/EvidenceEligibility';
-import { OCRScanner } from './components/OCRScanner';
-import { SmartAutofill } from './components/SmartAutofill';
-import { ApprovalGateModal } from './components/ApprovalGateModal';
-import { JudgePanel } from './components/JudgePanel';
+import { CitizenProfile, ApplicationMapData, AutofillItem } from '../types';
+import { Header } from './components/Header';
+import { SessionSwitcher } from './components/SessionSwitcher';
+import { ApplicationMapUI } from './components/ApplicationMapUI';
+import { EvidenceModeUI } from './components/EvidenceModeUI';
+import { DocumentOCRUI } from './components/DocumentOCRUI';
+import { HumanApprovalGate } from './components/HumanApprovalGate';
+import { VaultManagerUI } from './components/VaultManagerUI';
+import { FileText, ShieldCheck, FileScan, Lock, Layers } from 'lucide-react';
+
+const DEFAULT_PROFILES: CitizenProfile[] = [
+  {
+    id: 'citizen_001',
+    profileName: 'Ramprasad Sen (Small Farmer - WB)',
+    fullName: 'Ramprasad Sen',
+    age: 42,
+    gender: 'Male',
+    state: 'West Bengal',
+    district: 'Purulia',
+    annualIncome: 120000,
+    category: 'Small',
+    landHoldingHectares: 0.85,
+    aadhaarNumber: '9999-8888-7777',
+    mobileNumber: '9876543210',
+    natureOfOccupancy: 'Recorded Bargadar',
+    isInstitutionalLandholder: false
+  },
+  {
+    id: 'citizen_002',
+    profileName: 'Sunita Devi (Ladli Behna - MP)',
+    fullName: 'Sunita Devi',
+    age: 34,
+    gender: 'Female',
+    state: 'Madhya Pradesh',
+    district: 'Bhopal',
+    annualIncome: 85000,
+    category: 'Marginal',
+    landHoldingHectares: 0.2,
+    aadhaarNumber: '8888-7777-6666',
+    mobileNumber: '9876500000',
+    natureOfOccupancy: 'Owner',
+    isInstitutionalLandholder: false
+  }
+];
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'profile' | 'map' | 'evidence' | 'ocr' | 'autofill'>('map');
-  const [activeProfile, setActiveProfile] = useState<CitizenProfile | null>(null);
-  const [fields, setFields] = useState<FieldMapEntry[]>([]);
-  const [isApprovalGateOpen, setIsApprovalGateOpen] = useState<boolean>(false);
-  const [statusNotification, setStatusNotification] = useState<string>('');
-  const [showJudgePanel, setShowJudgePanel] = useState<boolean>(false);
-  const [eligibilityReport, setEligibilityReport] = useState<SchemeEligibilityReport | null>(null);
+  const [mode, setMode] = useState<'citizen' | 'facilitator'>('citizen');
+  const [activeTab, setActiveTab] = useState<'map' | 'evidence' | 'ocr' | 'vault'>('map');
+
+  const [profiles, setProfiles] = useState<CitizenProfile[]>(DEFAULT_PROFILES);
+  const [activeProfileId, setActiveProfileId] = useState<string>(DEFAULT_PROFILES[0].id);
+
+  const [mapData, setMapData] = useState<ApplicationMapData | null>(null);
+  const [isApprovalOpen, setIsApprovalOpen] = useState(false);
+  const [statusNotification, setStatusNotification] = useState<string | null>(null);
+
+  const activeProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
+
+  const handleScanDOM = () => {
+    if (typeof chrome !== 'undefined' && chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0]?.id;
+        if (tabId) {
+          chrome.tabs.sendMessage(tabId, { type: 'SCAN_DOM' }, (res) => {
+            if (chrome.runtime.lastError) {
+              setStatusNotification('Could not connect to active page. Open simulator at http://localhost:5173 first.');
+              return;
+            }
+            if (res && res.mapData) {
+              setMapData(res.mapData);
+              setStatusNotification(`Scanned ${res.mapData.totalFields} form fields from portal.`);
+            }
+          });
+        }
+      });
+    } else {
+      setMapData({
+        portalName: 'WB Krishak Bandhu Application Form',
+        totalFields: 8,
+        completionPercentage: 25,
+        readinessScore: 85,
+        fields: [
+          { id: 'fullName', name: 'fullName', type: 'text', label: 'Full Name of Applicant', value: 'Ramprasad Sen', required: true, category: 'personal' },
+          { id: 'natureOfOccupancy', name: 'natureOfOccupancy', type: 'select', label: 'Nature of Occupancy', value: '', required: true, category: 'income', isVague: true },
+          { id: 'landScale', name: 'landScale', type: 'text', label: 'Land Holding Scale', value: '', required: true, category: 'income', isVague: true }
+        ]
+      });
+    }
+  };
+
+  const handleConfirmAutofill = (items: AutofillItem[]) => {
+    setIsApprovalOpen(false);
+
+    if (typeof chrome !== 'undefined' && chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0]?.id;
+        if (tabId) {
+          chrome.tabs.sendMessage(tabId, { type: 'AUTOFILL_DOM', items }, (res) => {
+            if (res && res.mapData) {
+              setMapData(res.mapData);
+            }
+            setStatusNotification(`Autofilled ${items.length} fields with green confirmation outline.`);
+          });
+        }
+      });
+    } else {
+      setStatusNotification(`Simulated autofill of ${items.length} fields.`);
+    }
+  };
+
+  const handleProfileSelect = (id: string) => {
+    setActiveProfileId(id);
+    setStatusNotification(`Switched active profile to ${profiles.find(p => p.id === id)?.profileName}`);
+  };
+
+  const handleCreateProfile = () => {
+    const newId = `citizen_${Date.now()}`;
+    const newProfile: CitizenProfile = {
+      id: newId,
+      profileName: `New Citizen (${profiles.length + 1})`,
+      fullName: 'New Applicant',
+      age: 30,
+      gender: 'Male',
+      state: 'West Bengal',
+      district: 'Kolkata',
+      annualIncome: 100000,
+      category: 'Small',
+      landHoldingHectares: 0.5,
+      natureOfOccupancy: 'Owner'
+    };
+    setProfiles(prev => [...prev, newProfile]);
+    setActiveProfileId(newId);
+    setActiveTab('vault');
+  };
+
+  const handleImportComplete = (imported: CitizenProfile[]) => {
+    setProfiles(prev => {
+      const existingIds = new Set(prev.map(p => p.id));
+      const filtered = imported.filter(p => !existingIds.has(p.id));
+      return [...prev, ...filtered];
+    });
+    if (imported.length > 0) {
+      setActiveProfileId(imported[0].id);
+    }
+  };
 
   useEffect(() => {
     handleScanDOM();
   }, []);
 
-  const handleScanDOM = () => {
-    try {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0]?.id;
-        if (tabId) {
-          chrome.tabs.sendMessage(tabId, { type: 'SCAN_DOM' }, (response) => {
-            if (response && response.fields) {
-              setFields(response.fields);
-            }
-          });
-        }
-      });
-    } catch (e) {
-      console.warn('Chrome runtime message fallback:', e);
-    }
-  };
-
-  const handleTriggerAutofill = (items: any[]) => {
-    try {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0]?.id;
-        if (tabId) {
-          chrome.tabs.sendMessage(tabId, { type: 'AUTOFILL_DOM', items }, (response) => {
-            if (response && response.filledCount) {
-              setStatusNotification(`✅ Successfully injected ${response.filledCount} fields with green outlines & source badges.`);
-              handleScanDOM();
-            }
-          });
-        }
-      });
-    } catch (e) {
-      setStatusNotification('⚠️ Autofill requires live simulator tab.');
-    }
-  };
-
-  const handleResetDemo = () => {
-    setActiveProfile(null);
-    setStatusNotification('🔄 Demo state reset clean for next evaluation.');
-    handleScanDOM();
-  };
-
-  const handleApprovedSubmit = () => {
-    setIsApprovalGateOpen(false);
-    try {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0]?.id;
-        if (tabId) {
-          chrome.scripting.executeScript({
-            target: { tabId },
-            func: () => {
-              const submitBtn = document.getElementById('btn-portal-submit');
-              if (submitBtn) submitBtn.click();
-            }
-          });
-        }
-      });
-    } catch (e) {
-      setStatusNotification('Submitted application via Human Approval Gate.');
-    }
-  };
-
   return (
-    <div>
-      <div className="sp-header">
-        <div className="sp-logo">
-          <span>🇮🇳 LokSetu</span>
-          <span className="sp-logo-badge">Copilot</span>
-        </div>
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+    <div className="w-full min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
+      <Header mode={mode} onToggleMode={setMode} />
+
+      <main className="flex-1 p-4 space-y-4 max-w-md mx-auto w-full">
+        {mode === 'facilitator' && (
+          <SessionSwitcher
+            profiles={profiles}
+            activeProfileId={activeProfileId}
+            onSelectProfile={handleProfileSelect}
+            onCreateNewProfile={handleCreateProfile}
+            onImportComplete={handleImportComplete}
+          />
+        )}
+
+        <div className="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-xs">
           <button
-            onClick={() => setShowJudgePanel(!showJudgePanel)}
-            style={{
-              fontSize: '10px',
-              background: showJudgePanel ? '#FF671F' : 'rgba(255,255,255,0.2)',
-              color: '#FFF',
-              border: 'none',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
+            onClick={() => setActiveTab('map')}
+            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'map'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
           >
-            ⚖️ Judge Panel
+            <FileText className="w-3.5 h-3.5" />
+            <span>Form Map</span>
           </button>
+
           <button
-            onClick={handleResetDemo}
-            style={{
-              fontSize: '10px',
-              background: '#DC2626',
-              color: '#FFF',
-              border: 'none',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
+            onClick={() => setActiveTab('evidence')}
+            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'evidence'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
           >
-            🔄 Reset
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Evidence</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('ocr')}
+            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'ocr'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <FileScan className="w-3.5 h-3.5 text-amber-400" />
+            <span>OCR</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('vault')}
+            className={`flex-1 py-2 rounded-lg font-medium flex items-center justify-center gap-1 transition-all ${
+              activeTab === 'vault'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Lock className="w-3.5 h-3.5 text-indigo-300" />
+            <span>Vault</span>
           </button>
         </div>
-      </div>
 
-      {showJudgePanel && (
-        <JudgePanel
-          activeProfile={activeProfile}
-          fields={fields}
-          eligibilityReport={eligibilityReport}
-        />
-      )}
-
-      {/* Nav Tabs */}
-      <div className="sp-nav">
-        <button className={`sp-nav-btn ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}>
-          🗺️ App Map ({fields.length})
-        </button>
-        <button className={`sp-nav-btn ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
-          👤 Vault & Profiles
-        </button>
-        <button className={`sp-nav-btn ${activeTab === 'evidence' ? 'active' : ''}`} onClick={() => setActiveTab('evidence')}>
-          ⚖️ Evidence Mode
-        </button>
-        <button className={`sp-nav-btn ${activeTab === 'ocr' ? 'active' : ''}`} onClick={() => setActiveTab('ocr')}>
-          📄 OCR Hub
-        </button>
-        <button className={`sp-nav-btn ${activeTab === 'autofill' ? 'active' : ''}`} onClick={() => setActiveTab('autofill')}>
-          ⚡ Smart Fill
-        </button>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="sp-content">
         {statusNotification && (
-          <div style={{ background: '#ECFDF5', color: '#047857', border: '1px solid #A7F3D0', padding: '6px 10px', borderRadius: '6px', fontSize: '11px', marginBottom: '10px' }}>
-            {statusNotification}
+          <div className="bg-slate-900 border border-slate-800 text-indigo-300 text-xs px-3 py-2 rounded-lg flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              {statusNotification}
+            </span>
+            <button
+              onClick={() => setStatusNotification(null)}
+              className="text-slate-500 hover:text-slate-300 text-xs"
+            >
+              ✕
+            </button>
           </div>
         )}
 
         {activeTab === 'map' && (
-          <ApplicationMap fields={fields} onScanTrigger={handleScanDOM} />
-        )}
-
-        {activeTab === 'profile' && (
-          <ProfileSelector activeProfile={activeProfile} onProfileLoaded={(p) => setActiveProfile(p)} />
+          <ApplicationMapUI
+            mapData={mapData}
+            onScanClick={handleScanDOM}
+            onAutofillClick={() => setIsApprovalOpen(true)}
+          />
         )}
 
         {activeTab === 'evidence' && (
-          <EvidenceEligibility activeProfile={activeProfile} />
+          <EvidenceModeUI profile={activeProfile} />
         )}
 
         {activeTab === 'ocr' && (
-          <OCRScanner />
+          <DocumentOCRUI profile={activeProfile} />
         )}
 
-        {activeTab === 'autofill' && (
-          <SmartAutofill
+        {activeTab === 'vault' && (
+          <VaultManagerUI
             activeProfile={activeProfile}
-            fields={fields}
-            onTriggerAutofill={handleTriggerAutofill}
-            onOpenApprovalGate={() => setIsApprovalGateOpen(true)}
+            onSaveSuccess={(updated) => {
+              setProfiles(prev => prev.map(p => (p.id === updated.id ? updated : p)));
+              setStatusNotification(`Saved encrypted profile '${updated.profileName}'.`);
+            }}
           />
         )}
-      </div>
 
-      <ApprovalGateModal
-        isOpen={isApprovalGateOpen}
-        activeProfile={activeProfile}
-        fields={fields}
-        onClose={() => setIsApprovalGateOpen(false)}
-        onUserApprovedSubmit={handleApprovedSubmit}
-      />
+        <HumanApprovalGate
+          isOpen={isApprovalOpen}
+          profile={activeProfile}
+          mapData={mapData}
+          onConfirmAutofill={handleConfirmAutofill}
+          onClose={() => setIsApprovalOpen(false)}
+        />
+      </main>
     </div>
   );
 };

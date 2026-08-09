@@ -1,0 +1,18 @@
+{
+  "schemeId": "pm_kisan",
+  "schemeName": "PM-KISAN Samman Nidhi",
+  "state": "Central",
+  "department": "Ministry of Agriculture and Farmers Welfare",
+  "lastVerified": "2026-06-01",
+  "sourceUrl": "https://pmkisan.gov.in/",
+  "verificationStatus": "human-verified",
+  "criteria": {
+    "minAge": 18,
+    "maxAge": 100,
+    "allowedStates": ["ALL"],
+    "allowedCategories": ["Marginal", "Small", "Large"],
+    "maxIncomeCap": 250000,
+    "minLandHoldingHectares": 0.01,
+    "disqualifyInstitutionalLandholders": true
+  }
+}

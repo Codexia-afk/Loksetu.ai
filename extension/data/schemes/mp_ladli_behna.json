@@ -1,0 +1,17 @@
+{
+  "schemeId": "mp_ladli_behna",
+  "schemeName": "MP Mukhyamantri Ladli Behna Yojana",
+  "state": "Madhya Pradesh",
+  "department": "Department of Women and Child Development",
+  "lastVerified": "2026-05-10",
+  "sourceUrl": "https://cmladlibehna.mp.gov.in/",
+  "verificationStatus": "ILLUSTRATIVE — VERIFY BEFORE JUDGING",
+  "criteria": {
+    "minAge": 21,
+    "maxAge": 60,
+    "allowedGender": ["Female"],
+    "allowedStates": ["Madhya Pradesh"],
+    "maxIncomeCap": 250000,
+    "disqualifyInstitutionalLandholders": true
+  }
+}
