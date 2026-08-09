@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Shield Gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2C59"/>
+      <stop offset="50%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#065F46"/>
+    </linearGradient>
+
+    <!-- Inner Shield Gradient -->
+    <linearGradient id="innerShield" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <!-- Emerald Glow Filter -->
+    <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Lock Gradient -->
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#046A38"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Navy Border Shield -->
+  <path d="M256 16 L440 80 V232 C440 348 356 448 256 496 C156 448 72 348 72 232 V80 L256 16 Z" fill="#0B192C" stroke="#1E3A8A" stroke-width="12" stroke-linejoin="round"/>
+
+  <!-- Main Shield Body -->
+  <path d="M256 32 L420 92 V228 C420 334 342 428 256 472 C170 428 92 334 92 228 V92 L256 32 Z" fill="url(#shieldGrad)"/>
+
+  <!-- Inner Dark Panel -->
+  <path d="M256 56 L396 108 V224 C396 316 328 398 256 438 C184 398 116 316 116 224 V108 L256 56 Z" fill="url(#innerShield)" opacity="0.9"/>
+
+  <!-- Ashoka Chakra Sun Crest (Saffron Top Header) -->
+  <g transform="translate(256, 120)">
+    <circle r="48" fill="none" stroke="#FF671F" stroke-width="6"/>
+    <circle r="12" fill="#FF671F"/>
+    <!-- 24 Spokes -->
+    <path d="M0 -48 V48 M-48 0 H48 M-34 -34 L34 34 M-34 34 L34 -34 M-44 -18 L44 18 M-44 18 L44 -18 M-18 -44 L18 44 M-18 44 L18 -44" stroke="#FF671F" stroke-dasharray="2,2" stroke-width="3"/>
+  </g>
+
+  <!-- Emerald Lock in Center -->
+  <g filter="url(#emeraldGlow)">
+    <!-- Shackle -->
+    <path d="M200 230 V195 C200 164 225 140 256 140 C287 140 312 164 312 195 V230" fill="none" stroke="#34D399" stroke-width="18" stroke-linecap="round"/>
+    <!-- Lock Body -->
+    <rect x="180" y="225" width="152" height="115" rx="20" fill="url(#lockGrad)" stroke="#6EE7B7" stroke-width="6"/>
+    <!-- Keyhole -->
+    <circle cx="256" cy="272" r="14" fill="#0B192C"/>
+    <path d="M250 272 L246 304 H266 L262 272 Z" fill="#0B192C"/>
+  </g>
+
+  <!-- Upward White Bridge Road & Network Nodes -->
+  <g stroke="#FFFFFF" fill="none">
+    <!-- Curved Road -->
+    <path d="M 140 400 C 180 340, 220 370, 370 240" stroke-width="22" stroke-linecap="round"/>
+    <path d="M 140 400 C 180 340, 220 370, 370 240" stroke="#0F2C59" stroke-width="8" stroke-linecap="round" stroke-dasharray="14 10"/>
+
+    <!-- Network Node Dots -->
+    <circle cx="160" cy="380" r="10" fill="#34D399" stroke="#FFFFFF" stroke-width="4"/>
+    <circle cx="240" cy="345" r="10" fill="#34D399" stroke="#FFFFFF" stroke-width="4"/>
+    <circle cx="310" cy="300" r="10" fill="#34D399" stroke="#FFFFFF" stroke-width="4"/>
+    <circle cx="370" cy="240" r="12" fill="#FF671F" stroke="#FFFFFF" stroke-width="4"/>
+  </g>
+</svg>

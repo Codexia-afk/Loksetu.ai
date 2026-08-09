@@ -16,27 +16,27 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
   const ineligibleCount = results.filter(r => r.status === 'ineligible').length;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-4 shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-4 shadow-2xs">
       {/* Matrix Summary Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
           <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-emerald-600" />
+            <Layers className="w-4 h-4 text-[#0F2C59]" />
             Cross-Scheme Eligibility Matrix
           </h3>
-          <p className="text-xs text-slate-500 font-medium">Screening profile against {results.length} active scheme rulesets</p>
+          <p className="text-xs text-slate-500">Screening profile against {results.length} active scheme rulesets</p>
         </div>
-        <div className="flex gap-1 text-[10px] font-bold">
-          <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-md shadow-2xs">
+        <div className="flex gap-1.5 text-[10px] font-bold">
+          <span className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">
             {eligibleCount} Eligible
           </span>
           {partialCount > 0 && (
-            <span className="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-md shadow-2xs">
+            <span className="bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded-full">
               {partialCount} Partial
             </span>
           )}
           {ineligibleCount > 0 && (
-            <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md">
+            <span className="bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-full">
               {ineligibleCount} Ineligible
             </span>
           )}
@@ -48,38 +48,38 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
         {results.map((item) => (
           <div
             key={item.schemeId}
-            className={`border rounded-xl p-3.5 space-y-2 text-xs transition-all shadow-2xs ${
+            className={`border rounded-xl p-3 space-y-2 text-xs transition-all ${
               item.status === 'eligible'
-                ? 'bg-emerald-50/70 border-emerald-200/90'
+                ? 'bg-emerald-50/40 border-emerald-200'
                 : item.status === 'partial'
-                ? 'bg-amber-50/70 border-amber-200/90'
-                : 'bg-slate-50/80 border-slate-200/80'
+                ? 'bg-amber-50/40 border-amber-200'
+                : 'bg-slate-50 border-slate-200'
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {item.status === 'eligible' ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : item.status === 'partial' ? (
-                  <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0" />
+                  <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-slate-400 shrink-0" />
+                  <XCircle className="w-4 h-4 text-red-600 shrink-0" />
                 )}
                 <div>
-                  <h4 className="font-extrabold text-slate-900 leading-tight">{item.schemeName}</h4>
-                  <p className="text-[10px] text-slate-500 font-mono font-medium">
+                  <h4 className="font-extrabold text-slate-900">{item.schemeName}</h4>
+                  <p className="text-[10px] text-slate-500 font-mono">
                     {item.state} • {item.department}
                   </p>
                 </div>
               </div>
 
               <div className="text-right">
-                <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border uppercase shadow-2xs ${
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase ${
                   item.status === 'eligible'
-                    ? 'bg-emerald-600 text-white border-emerald-600'
+                    ? 'bg-emerald-100 border-emerald-300 text-emerald-900'
                     : item.status === 'partial'
-                    ? 'bg-amber-600 text-white border-amber-600'
-                    : 'bg-slate-200 text-slate-700 border-slate-300'
+                    ? 'bg-amber-100 border-amber-300 text-amber-900'
+                    : 'bg-slate-200 border-slate-300 text-slate-700'
                 }`}>
                   {item.status === 'eligible' ? '100% Qualified' : item.status === 'partial' ? 'Partial Match' : 'Not Qualified'}
                 </span>
@@ -89,11 +89,11 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
               </div>
             </div>
 
-            {/* Failed Rule Gazette Citations */}
+            {/* Failed Rule Gazette Citations for Ineligible / Partial Schemes */}
             {item.failedRules.length > 0 && (
-              <div className="bg-white border border-slate-200/90 rounded-lg p-2.5 text-[10px] space-y-1 text-slate-800 shadow-2xs">
-                <p className="font-bold text-amber-900 flex items-center gap-1">
-                  <XCircle className="w-3.5 h-3.5 text-amber-600" /> Disqualifying Gazette Criteria:
+              <div className="bg-white border border-slate-200 rounded-lg p-2 text-[10px] space-y-1 text-slate-800 shadow-2xs">
+                <p className="font-bold text-amber-800 flex items-center gap-1">
+                  <XCircle className="w-3 h-3 text-amber-600" /> Disqualifying Gazette Criteria:
                 </p>
                 {item.failedRules.map((rule, idx) => (
                   <div key={idx} className="flex items-center justify-between border-t border-slate-100 pt-1">
@@ -102,7 +102,7 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
                       href={rule.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-emerald-700 underline font-mono font-bold flex items-center gap-0.5 shrink-0 ml-2 hover:text-emerald-900"
+                      className="text-indigo-700 underline font-mono font-semibold flex items-center gap-0.5 shrink-0 ml-2 hover:text-indigo-900"
                     >
                       <BookOpen className="w-2.5 h-2.5" />
                       {rule.sourceReference}

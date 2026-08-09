@@ -7,6 +7,9 @@
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --gov-navy: #0F2C59;
+  --gov-saffron: #FF671F;
+  --gov-green: #046A38;
 }
 
 * {
@@ -17,7 +20,7 @@
 
 html, body {
   font-family: var(--font-sans);
-  background: linear-gradient(135deg, #F3F6FA 0%, #EAEFF5 100%);
+  background-color: #F8FAFC;
   color: #0F172A;
   width: 100%;
   min-height: 100vh;
@@ -26,7 +29,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Clean Light Scrollbar */
+/* Custom Clean Sleek Light Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -45,19 +48,18 @@ html, body {
   background: #94A3B8;
 }
 
-/* Light Mode Glassmorphism & Cards */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.95);
+/* Glassmorphism & Light Theme Micro-Interactions */
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 14px 0 rgba(15, 23, 42, 0.04);
+  border: 1px solid #E2E8F0;
 }
 
-.glow-emerald {
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.22);
+.glow-emerald-light {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
 
-.glow-indigo {
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.22);
+.glow-navy-light {
+  box-shadow: 0 4px 12px rgba(15, 44, 89, 0.15);
 }
