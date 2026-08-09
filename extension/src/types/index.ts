@@ -56,6 +56,12 @@ export interface FormField {
   placeholder?: string;
   contextHint?: string;
   isVague?: boolean;
+  isVisible?: boolean;
+  isHidden?: boolean;
+  isDisabled?: boolean;
+  maxLength?: number | null;
+  pattern?: string | null;
+  frameOrigin?: string;
 }
 
 export interface ApplicationMapData {
@@ -134,6 +140,85 @@ export interface AutofillItem {
   value: string;
   sourceLabel: string;
   confidence: number;
+  transformInstruction?: TransformedValueInstruction;
+}
+
+// Master Prompt v2 Types
+export type TransformOp =
+  | 'NONE'
+  | 'EXTRACT_DAY'
+  | 'EXTRACT_MONTH'
+  | 'EXTRACT_YEAR'
+  | 'SPLIT_DIGITS_GROUP'
+  | 'ADDRESS_LINE'
+  | 'UPPERCASE'
+  | 'REMOVE_SPACES'
+  | 'FORMAT_DDMMYYYY'
+  | 'FORMAT_YYYYMMDD';
+
+export interface TransformedValueInstruction {
+  op: TransformOp;
+  group?: number;
+  totalGroups?: number;
+  line?: number;
+  params?: Record<string, any>;
+}
+
+export interface MappedFieldV2 {
+  elementId: string;
+  targetVaultKey: string;
+  confidenceScore: number;
+  matchingReason: string;
+  requiresUserVerification: boolean;
+  transformedValueInstruction: TransformedValueInstruction;
+}
+
+export interface UnmappedElementV2 {
+  elementId: string;
+  category: 'captcha_or_otp' | 'no_confident_match' | 'prompt_injection_suspected' | 'ambiguous_duplicate' | 'unsupported_field_type';
+  reason: string;
+}
+
+export interface DocumentToUploadV2 {
+  elementId: string;
+  expectedDocument: string;
+  acceptedFormats: string[];
+}
+
+export interface FormGuardsV2 {
+  actionButtons: string[];
+  hiddenOrSuspiciousElements: string[];
+  crossOriginElements: string[];
+  hasCaptcha: boolean;
+  hasFileUploads: boolean;
+}
+
+export interface FieldMatchingResponseV2 {
+  schemaVersion: '2.0';
+  mappedFields: MappedFieldV2[];
+  unmappedElements: UnmappedElementV2[];
+  documentsToUpload: DocumentToUploadV2[];
+  formGuards: FormGuardsV2;
+}
+
+export interface FormNodeV2 {
+  elementId: string;
+  tagName: string;
+  inputType: string;
+  nameAttr: string;
+  idAttr: string;
+  labelText: string;
+  placeholderText: string;
+  ariaLabel: string;
+  sectionContext: string;
+  options?: { value: string; label: string }[];
+  isVisible?: boolean;
+  isHidden?: boolean;
+  isDisabled?: boolean;
+  isRequired?: boolean;
+  maxLength?: number | null;
+  pattern?: string | null;
+  frameOrigin?: string;
 }
 
 // Legacy Type Aliases for Backward Compatibility

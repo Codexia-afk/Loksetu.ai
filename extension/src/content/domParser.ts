@@ -1,5 +1,6 @@
 import { FormField, ApplicationMapData, AutofillItem } from '../types';
 import { highlightElement } from './domHighlighter';
+import { setNativeValue } from '../engine/fieldMatcherV2';
 
 function categorizeField(labelText: string, name: string): FormField['category'] {
   const norm = (labelText + ' ' + name).toLowerCase();
@@ -38,6 +39,14 @@ function extractContextHint(element: HTMLElement): string {
   return 'General Application Form';
 }
 
+function checkIsVisible(el: HTMLElement): boolean {
+  if (el.offsetWidth === 0 && el.offsetHeight === 0) return false;
+  if (el.getAttribute('aria-hidden') === 'true') return false;
+  const style = window.getComputedStyle(el);
+  if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+  return true;
+}
+
 export function parseDOMFields(): ApplicationMapData {
   const elements = Array.from(document.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
     'input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea'
@@ -64,6 +73,12 @@ export function parseDOMFields(): ApplicationMapData {
     const category = categorizeField(labelText, el.name || '');
     const contextHint = extractContextHint(el);
     const isVague = labelText.toLowerCase().includes('nature') || labelText.toLowerCase().includes('scale') || labelText.length < 5;
+    const isVisible = checkIsVisible(el);
+    const isHidden = !isVisible || el.type === 'hidden';
+    const isDisabled = el.disabled || ('readOnly' in el ? (el as any).readOnly : false);
+    const maxLength = ('maxLength' in el && typeof el.maxLength === 'number' && el.maxLength > 0) ? el.maxLength : null;
+    const pattern = el.getAttribute('pattern') || null;
+    const frameOrigin = window.location.origin;
 
     return {
       id,
@@ -76,7 +91,13 @@ export function parseDOMFields(): ApplicationMapData {
       ariaLabel: el.getAttribute('aria-label') || undefined,
       placeholder: placeholderText || undefined,
       contextHint,
-      isVague
+      isVague,
+      isVisible,
+      isHidden,
+      isDisabled,
+      maxLength,
+      pattern,
+      frameOrigin
     };
   });
 
@@ -104,13 +125,7 @@ export function autofillDOMFields(items: AutofillItem[]): { successCount: number
                 document.querySelector(`[name="${item.fieldId}"]`)) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null;
 
     if (el && 'value' in el) {
-      el.value = item.value;
-
-      // Dispatch native input & change events for framework binding (React, Angular, Vue, plain JS)
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-
-      // Apply high contrast emerald highlight border and source badge
+      setNativeValue(el, item.value);
       highlightElement(el, item.sourceLabel);
       successCount++;
     }
