@@ -17,8 +17,8 @@
 
 html, body {
   font-family: var(--font-sans);
-  background-color: #020617;
-  color: #F8FAFC;
+  background: linear-gradient(135deg, #F3F6FA 0%, #EAEFF5 100%);
+  color: #0F172A;
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
@@ -26,37 +26,38 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Sleek Scrollbar */
+/* Custom Clean Light Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #090D16;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #CBD5E1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94A3B8;
 }
 
-/* Glassmorphism & Micro-Interactions */
+/* Light Mode Glassmorphism & Cards */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 14px 0 rgba(15, 23, 42, 0.04);
 }
 
 .glow-emerald {
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.22);
 }
 
 .glow-indigo {
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.22);
 }

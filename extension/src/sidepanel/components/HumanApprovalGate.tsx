@@ -66,65 +66,65 @@ export const HumanApprovalGate: React.FC<HumanApprovalGateProps> = ({
   const autofillItems = prepareAutofillItems();
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-sm w-full p-4 space-y-4 shadow-2xl">
-        <div className="flex items-center space-x-2 border-b border-slate-800 pb-3">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600/30 border border-emerald-500/50 flex items-center justify-center text-emerald-400">
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-white border border-slate-200/90 rounded-2xl max-w-sm w-full p-4 space-y-4 shadow-xl">
+        <div className="flex items-center space-x-2.5 border-b border-slate-100 pb-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-2xs">
             <UserCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-100 text-sm">Human Approval Gate</h3>
-            <p className="text-xs text-slate-400">Review Provenance Before Field Population</p>
+            <h3 className="font-extrabold text-slate-900 text-sm">Human Approval Gate</h3>
+            <p className="text-xs text-slate-500 font-medium">Review Provenance Before Field Population</p>
           </div>
         </div>
 
-        <div className="bg-slate-800/60 p-3 rounded-lg border border-slate-700 flex items-center justify-between text-xs">
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between text-xs">
           <div>
-            <p className="text-slate-300 font-medium">Target Form: {mapData.portalName}</p>
-            <p className="text-slate-400 text-[11px]">Ready to populate {autofillItems.length} of {mapData.totalFields} fields</p>
+            <p className="text-slate-900 font-bold">Target Form: {mapData.portalName}</p>
+            <p className="text-slate-500 font-medium text-[11px]">Ready to populate {autofillItems.length} of {mapData.totalFields} fields</p>
           </div>
           <div className="text-right">
-            <span className="text-lg font-extrabold text-emerald-400">{mapData.readinessScore}%</span>
-            <p className="text-[10px] text-slate-400">Readiness</p>
+            <span className="text-xl font-extrabold text-emerald-600">{mapData.readinessScore}%</span>
+            <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Readiness</p>
           </div>
         </div>
 
         <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
           {autofillItems.map(item => (
-            <div key={item.fieldId} className="bg-slate-950 p-2 rounded border border-slate-800 text-xs flex justify-between items-center">
+            <div key={item.fieldId} className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-200/80 text-xs flex justify-between items-center shadow-2xs">
               <div>
-                <span className="text-slate-400 text-[11px] block">{item.fieldId}</span>
-                <span className="text-slate-200 font-semibold">{item.value}</span>
+                <span className="text-slate-500 font-medium text-[10px] block">{item.fieldId}</span>
+                <span className="text-slate-900 font-bold">{item.value}</span>
               </div>
-              <span className="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2 py-0.5 rounded font-mono">
+              <span className="text-[10px] bg-slate-900 text-white font-mono px-2 py-0.5 rounded-md font-semibold shadow-2xs">
                 {item.sourceLabel}
               </span>
             </div>
           ))}
         </div>
 
-        <div className="bg-amber-950/40 border border-amber-800/40 p-2.5 rounded text-[11px] text-amber-200 space-y-1">
-          <p className="font-semibold flex items-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+        <div className="bg-amber-50/90 border border-amber-200/90 p-3 rounded-xl text-[11px] text-amber-900 space-y-1 shadow-2xs">
+          <p className="font-bold flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             Human Verification Required
           </p>
-          <p className="opacity-90">
-            LokSetu will fill input fields on the portal DOM. Form submission remains 100% manual — you must review all fields on the official portal and press submit yourself.
+          <p className="opacity-90 leading-relaxed font-medium">
+            LokSetu will fill input fields on the portal DOM with green outlines. Form submission remains 100% manual — you must review all fields on the official portal and press submit yourself.
           </p>
         </div>
 
         <div className="flex gap-2 pt-1">
           <button
             onClick={onClose}
-            className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium border border-slate-700 transition-all"
+            className="flex-1 bg-slate-100 hover:bg-slate-200/80 text-slate-800 py-2.5 rounded-xl text-xs font-semibold border border-slate-200/80 transition-all"
           >
             Cancel
           </button>
           <button
             onClick={() => onConfirmAutofill(autofillItems)}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg text-xs font-semibold shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-xs font-extrabold shadow-sm flex items-center justify-center gap-1.5 transition-all"
           >
-            <ShieldCheck className="w-4 h-4" />
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
             Authorize & Fill
           </button>
         </div>

@@ -16,27 +16,27 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
   const ineligibleCount = results.filter(r => r.status === 'ineligible').length;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-4 shadow-sm">
       {/* Matrix Summary Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h3 className="font-semibold text-slate-200 text-sm flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-indigo-400" />
+          <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-emerald-600" />
             Cross-Scheme Eligibility Matrix
           </h3>
-          <p className="text-xs text-slate-400">Screening profile against {results.length} active scheme rulesets</p>
+          <p className="text-xs text-slate-500 font-medium">Screening profile against {results.length} active scheme rulesets</p>
         </div>
-        <div className="flex gap-1.5 text-[10px] font-semibold">
-          <span className="bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 px-2 py-0.5 rounded">
+        <div className="flex gap-1 text-[10px] font-bold">
+          <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-md shadow-2xs">
             {eligibleCount} Eligible
           </span>
           {partialCount > 0 && (
-            <span className="bg-amber-950/80 border border-amber-700/60 text-amber-300 px-2 py-0.5 rounded">
+            <span className="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-md shadow-2xs">
               {partialCount} Partial
             </span>
           )}
           {ineligibleCount > 0 && (
-            <span className="bg-slate-800 text-slate-400 px-2 py-0.5 rounded">
+            <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md">
               {ineligibleCount} Ineligible
             </span>
           )}
@@ -48,61 +48,61 @@ export const SchemeMatrixUI: React.FC<SchemeMatrixUIProps> = ({ profile, onSelec
         {results.map((item) => (
           <div
             key={item.schemeId}
-            className={`border rounded-lg p-3 space-y-2 text-xs transition-all ${
+            className={`border rounded-xl p-3.5 space-y-2 text-xs transition-all shadow-2xs ${
               item.status === 'eligible'
-                ? 'bg-emerald-950/30 border-emerald-700/40'
+                ? 'bg-emerald-50/70 border-emerald-200/90'
                 : item.status === 'partial'
-                ? 'bg-amber-950/30 border-amber-700/40'
-                : 'bg-slate-800/30 border-slate-700/40'
+                ? 'bg-amber-50/70 border-amber-200/90'
+                : 'bg-slate-50/80 border-slate-200/80'
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {item.status === 'eligible' ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 ) : item.status === 'partial' ? (
-                  <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                  <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0" />
                 ) : (
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <XCircle className="w-5 h-5 text-slate-400 shrink-0" />
                 )}
                 <div>
-                  <h4 className="font-bold text-slate-100">{item.schemeName}</h4>
-                  <p className="text-[10px] text-slate-400 font-mono">
+                  <h4 className="font-extrabold text-slate-900 leading-tight">{item.schemeName}</h4>
+                  <p className="text-[10px] text-slate-500 font-mono font-medium">
                     {item.state} • {item.department}
                   </p>
                 </div>
               </div>
 
               <div className="text-right">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${
+                <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border uppercase shadow-2xs ${
                   item.status === 'eligible'
-                    ? 'bg-emerald-950 border-emerald-500/60 text-emerald-300'
+                    ? 'bg-emerald-600 text-white border-emerald-600'
                     : item.status === 'partial'
-                    ? 'bg-amber-950 border-amber-500/60 text-amber-300'
-                    : 'bg-slate-800 border-slate-700 text-slate-400'
+                    ? 'bg-amber-600 text-white border-amber-600'
+                    : 'bg-slate-200 text-slate-700 border-slate-300'
                 }`}>
                   {item.status === 'eligible' ? '100% Qualified' : item.status === 'partial' ? 'Partial Match' : 'Not Qualified'}
                 </span>
-                <p className="text-[10px] text-slate-400 mt-0.5">
+                <p className="text-[10px] text-slate-500 font-semibold mt-0.5">
                   {item.passCount}/{item.totalCount} Rules Passed
                 </p>
               </div>
             </div>
 
-            {/* Failed Rule Gazette Citations for Ineligible / Partial Schemes */}
+            {/* Failed Rule Gazette Citations */}
             {item.failedRules.length > 0 && (
-              <div className="bg-slate-950/80 border border-slate-800 rounded p-2 text-[10px] space-y-1 text-slate-300">
-                <p className="font-semibold text-amber-300 flex items-center gap-1">
-                  <XCircle className="w-3 h-3 text-amber-400" /> Disqualifying Gazette Criteria:
+              <div className="bg-white border border-slate-200/90 rounded-lg p-2.5 text-[10px] space-y-1 text-slate-800 shadow-2xs">
+                <p className="font-bold text-amber-900 flex items-center gap-1">
+                  <XCircle className="w-3.5 h-3.5 text-amber-600" /> Disqualifying Gazette Criteria:
                 </p>
                 {item.failedRules.map((rule, idx) => (
-                  <div key={idx} className="flex items-center justify-between border-t border-slate-800/80 pt-1">
-                    <span className="text-slate-300">{rule.ruleLogic}</span>
+                  <div key={idx} className="flex items-center justify-between border-t border-slate-100 pt-1">
+                    <span className="text-slate-700 font-medium">{rule.ruleLogic}</span>
                     <a
                       href={rule.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-400 underline font-mono flex items-center gap-0.5 shrink-0 ml-2"
+                      className="text-emerald-700 underline font-mono font-bold flex items-center gap-0.5 shrink-0 ml-2 hover:text-emerald-900"
                     >
                       <BookOpen className="w-2.5 h-2.5" />
                       {rule.sourceReference}

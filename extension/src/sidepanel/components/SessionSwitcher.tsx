@@ -75,17 +75,17 @@ export const SessionSwitcher: React.FC<SessionSwitcherProps> = ({
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
-          <Users className="w-4 h-4 text-amber-400" />
+        <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <Users className="w-4 h-4 text-amber-600" />
           Active Citizen Profile Switcher
         </h3>
         <button
           onClick={onCreateNewProfile}
-          className="text-xs bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all"
+          className="text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all shadow-2xs"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3.5 h-3.5 text-emerald-400" />
           New Profile
         </button>
       </div>
@@ -101,21 +101,21 @@ export const SessionSwitcher: React.FC<SessionSwitcherProps> = ({
             <button
               key={p.id}
               onClick={() => onSelectProfile(p.id)}
-              className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center justify-between ${
+              className={`w-full text-left p-3 rounded-xl border text-xs transition-all flex items-center justify-between shadow-2xs ${
                 isActive
-                  ? 'bg-indigo-950/60 border-indigo-500/60 text-slate-100 ring-1 ring-indigo-500/50'
-                  : 'bg-slate-800/50 border-slate-700/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-emerald-50/90 border-emerald-300 text-slate-900 font-bold ring-1 ring-emerald-500/30'
+                  : 'bg-slate-50 border-slate-200/80 text-slate-700 hover:bg-slate-100 font-medium'
               }`}
             >
               <div>
-                <p className="font-semibold text-slate-200">{p.profileName}</p>
-                <p className="text-[11px] text-slate-400">
+                <p className="font-extrabold text-slate-900">{p.profileName}</p>
+                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
                   {name} • {state} • ₹{income.toLocaleString('en-IN')}/yr
                 </p>
               </div>
               {isActive && (
-                <div className="flex items-center gap-1 text-emerald-400 font-medium">
-                  <CheckCircle2 className="w-4 h-4" />
+                <div className="flex items-center gap-1 text-emerald-700 font-bold text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Active</span>
                 </div>
               )}
@@ -124,17 +124,17 @@ export const SessionSwitcher: React.FC<SessionSwitcherProps> = ({
         })}
       </div>
 
-      <div className="pt-2 border-t border-slate-800 space-y-3">
+      <div className="pt-2 border-t border-slate-100 space-y-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-400 font-medium flex items-center gap-1">
-            <KeyRound className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="text-slate-700 font-semibold flex items-center gap-1">
+            <KeyRound className="w-3.5 h-3.5 text-amber-500" />
             Vault PIN (6+ digits)
           </span>
           <input
             type="password"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
-            className="bg-slate-950 border border-slate-700 text-slate-200 px-2 py-1 rounded text-xs w-24 text-center font-mono focus:border-indigo-500 focus:outline-none"
+            className="bg-slate-50 border border-slate-300 text-slate-900 px-2 py-1 rounded-lg text-xs w-24 text-center font-mono font-bold focus:bg-white focus:border-emerald-500 focus:outline-none shadow-2xs"
             placeholder="123456"
           />
         </div>
@@ -143,14 +143,14 @@ export const SessionSwitcher: React.FC<SessionSwitcherProps> = ({
           <button
             onClick={handleExport}
             disabled={isProcessing}
-            className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-1.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+            className="flex-1 bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-800 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
           >
-            {isProcessing ? <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" /> : <Download className="w-3.5 h-3.5 text-indigo-400" />}
+            {isProcessing ? <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" /> : <Download className="w-3.5 h-3.5 text-slate-700" />}
             Export .loksetu
           </button>
 
-          <label className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-1.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer transition-all">
-            <Upload className="w-3.5 h-3.5 text-amber-400" />
+          <label className="flex-1 bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-800 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+            <Upload className="w-3.5 h-3.5 text-amber-600" />
             Import .loksetu
             <input
               type="file"
@@ -162,8 +162,8 @@ export const SessionSwitcher: React.FC<SessionSwitcherProps> = ({
         </div>
 
         {statusMessage && (
-          <p className="text-[11px] text-indigo-300 bg-indigo-950/40 border border-indigo-800/40 p-2 rounded flex items-center gap-1.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <p className="text-[11px] text-emerald-900 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl font-semibold flex items-center gap-1.5">
+            <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             {statusMessage}
           </p>
         )}
