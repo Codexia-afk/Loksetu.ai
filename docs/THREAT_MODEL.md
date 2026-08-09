@@ -38,3 +38,14 @@
 - **Risk**: Programmatic submission by extensions can submit invalid, fraudulent, or unintended applications without explicit user consent.
 - **Mitigation**: `.submit()`, `.requestSubmit()`, and synthetic `'submit'` event dispatching are strictly forbidden across all code paths.
 - **Enforcement**: Build-blocking CI script (`npm run check:no-submit`) and Vitest structural tests verify zero occurrences in source code.
+
+---
+
+## 5. CSC Operator Session Isolation & In-Memory Protection
+
+- **Risk**: CSC operators and NGO volunteers handle back-to-back applications for multiple citizens on shared hardware, risking residual PII lingering in memory or shoulder-surfing between sessions.
+- **Mitigation**:
+  - **Memory Wiping**: `sessionLockManager.ts` fully overwrites and nullifies decrypted in-memory citizen profiles upon profile switch, logout, or sidepanel close.
+  - **Mandatory PIN Re-entry**: Switching to a second citizen's vault requires explicit 6-digit PIN verification. Decryption keys are never reused across different profiles.
+  - **Idle Auto-Lock**: Automatically clears decrypted in-memory PII after 5 minutes of inactivity (`IDLE_TIMEOUT_MS`).
+  - **Visual Confirmation**: Emits `sessionCleared` events surfaced as UI notifications (*"Session cleared — no citizen data remains in memory"*).

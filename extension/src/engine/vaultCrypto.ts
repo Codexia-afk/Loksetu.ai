@@ -5,6 +5,16 @@ const DB_NAME = 'LokSetu_Vault_DB';
 const DB_VERSION = 1;
 const STORE_NAME = 'encrypted_profiles';
 
+function getCrypto(): Crypto {
+  if (typeof window !== 'undefined' && window.crypto) {
+    return window.crypto;
+  }
+  if (typeof globalThis !== 'undefined' && (globalThis as any).crypto) {
+    return (globalThis as any).crypto;
+  }
+  throw new Error('Web Crypto API is unavailable in current runtime.');
+}
+
 /**
  * Derives an AES-GCM 256-bit Key from a user numeric PIN using 600,000 PBKDF2 iterations.
  */
@@ -15,8 +25,9 @@ export async function deriveKey(pin: string, salt: Uint8Array): Promise<CryptoKe
 
   const encoder = new TextEncoder();
   const pinBuffer = encoder.encode(pin);
+  const cryptoObj = getCrypto();
 
-  const baseKey = await window.crypto.subtle.importKey(
+  const baseKey = await cryptoObj.subtle.importKey(
     'raw',
     pinBuffer,
     'PBKDF2',
@@ -24,7 +35,7 @@ export async function deriveKey(pin: string, salt: Uint8Array): Promise<CryptoKe
     ['deriveKey']
   );
 
-  return window.crypto.subtle.deriveKey(
+  return cryptoObj.subtle.deriveKey(
     {
       name: 'PBKDF2',
       salt: salt.buffer as ArrayBuffer,
@@ -60,14 +71,15 @@ export async function encryptProfile(profile: CitizenProfile, pin: string): Prom
     throw new Error('PIN must be at least 6 digits for cryptographic safety.');
   }
 
-  const salt = window.crypto.getRandomValues(new Uint8Array(16));
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const cryptoObj = getCrypto();
+  const salt = cryptoObj.getRandomValues(new Uint8Array(16));
+  const iv = cryptoObj.getRandomValues(new Uint8Array(12));
   const key = await deriveKey(pin, salt);
 
   const encoder = new TextEncoder();
   const plaintext = encoder.encode(JSON.stringify(profile));
 
-  const ciphertext = await window.crypto.subtle.encrypt(
+  const ciphertext = await cryptoObj.subtle.encrypt(
     { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer },
     key,
     plaintext
@@ -92,6 +104,7 @@ export async function decryptProfile(container: EncryptedVaultContainer, pin: st
     throw new Error('PIN must be at least 6 digits for cryptographic safety.');
   }
 
+  const cryptoObj = getCrypto();
   const salt = hexToBuf(container.saltHex);
   const iv = hexToBuf(container.ivHex);
   const ciphertext = hexToBuf(container.ciphertextHex);
@@ -99,7 +112,7 @@ export async function decryptProfile(container: EncryptedVaultContainer, pin: st
   const key = await deriveKey(pin, salt);
 
   try {
-    const decryptedBuffer = await window.crypto.subtle.decrypt(
+    const decryptedBuffer = await cryptoObj.subtle.decrypt(
       { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer },
       key,
       ciphertext.buffer as ArrayBuffer
