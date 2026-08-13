@@ -1,8 +1,8 @@
-# LokSetu v2.1: Sovereign Form Intelligence & Guided Application Copilot ("God Mode")
+# LokSetu v2.1: Sovereign Form Intelligence & Guided Application Copilot (Sovereign Edition)
 
 <div align="center">
 
-![LokSetu v2.1 Banner](https://img.shields.io/badge/LokSetu-v2.1_God_Mode-indigo?style=for-the-badge&logo=shield&logoColor=white)
+![LokSetu v2.1 Banner](https://img.shields.io/badge/LokSetu-v2.1_Sovereign-indigo?style=for-the-badge&logo=shield&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3_Extension-emerald?style=for-the-badge&logo=googlechrome&logoColor=white)
 ![Encryption](https://img.shields.io/badge/Zero--Knowledge-600k_PBKDF2_AES--256--GCM-amber?style=for-the-badge&logo=lock&logoColor=white)
 ![Provenance](https://img.shields.io/badge/Gazette_Citations-100%25_Auditable-blue?style=for-the-badge&logo=checkmarx&logoColor=white)
@@ -12,7 +12,7 @@
 
 ---
 
-**[💻 Local Deployment Guide](#-local-deployment-guide--how-to-run-locally) • [⚡ What's New in v2.1](#-whats-new-in-v21-god-mode) • [🏛️ System Architecture](#%EF%B8%8F-system-architecture--how-it-works) • [🔒 Security & Threat Model](#-zero-knowledge-security--privacy-audit) • [🧪 Test Proof](#-verification--automated-test-results)**
+**[💻 Local Deployment Guide](#-local-deployment-guide--how-to-run-locally) • [⚡ What's New in v2.1](#-whats-new-in-v21-sovereign-edition) • [🏛️ System Architecture](#%EF%B8%8F-system-architecture--how-it-works) • [🔒 Security & Threat Model](#-zero-knowledge-security--privacy-audit) • [🧪 Test Proof](#-verification--automated-test-results)**
 
 </div>
 
@@ -58,7 +58,7 @@ cd extension && npm run build
 
 ---
 
-## ⚡ What's New in v2.1 ("God Mode")
+## ⚡ What's New in v2.1 (Sovereign Edition)
 
 LokSetu v2.1 closes 6 critical architectural & operational gaps to create an unassailable hackathon moat:
 

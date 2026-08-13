@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({ mode, onToggleMode }) => {
                 LokSetu
               </h1>
               <span className="text-[10px] font-bold bg-[#FF671F] text-white px-2 py-0.5 rounded-full font-mono shadow-xs uppercase">
-                v2.1 God Mode
+                v2.1 Sovereign
               </span>
             </div>
             <p className="text-[11px] font-medium text-slate-200 flex items-center gap-1 mt-0.5">
